@@ -1,0 +1,99 @@
+body {
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+}
+p {
+    margin:auto
+}
+.title {
+    min-width:150px;
+}
+.author-button {
+    width: 130px;
+}
+.add-book-button {
+    width: 100px;
+    margin-right: 10px;
+}
+.homeBackground {
+    background-image: url('./images/library_7.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100vh;
+    width: 100vw;
+}
+.homeBackground p {
+    color: white;
+    font-size: xx-large;
+}
+.input-group {
+    display:flex;
+    flex-wrap: nowrap;
+}
+.input-group .multiselect .optionContainer {
+    max-height: 100px;
+}
+#pageTitle {
+    display:flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content:space-between;
+    margin-bottom: 25px;    
+}
+.search-bar {    
+    width:45%
+}
+#searchLabel {
+    background-color: #D3D3D3;
+}
+.authorData {
+    min-width:150px;
+    max-width:150px;
+    height: 150px;
+}
+.biography {
+    min-width:150px;
+    max-width:500px;
+    height: 150px;
+    text-wrap: wrap;
+}
+.actionButtons {
+    margin:2px;
+}
+.editIcon{
+    font-size: large;
+}
+.trashIcon{
+    font-size: large;
+}
+.book-wrapper {
+    display:flex;
+    justify-content: start;
+    align-content: center;
+    margin: 3px;
+    padding-bottom: 20px;
+}
+.book-wrapper img {
+    width:100px;
+    height:150px;
+    margin-top:15px;
+}
+.book-wrapper h2{
+    align-self:center;
+    margin-left:15px;
+}
+.bookModal{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;
+    margin-left:25px;
+    font-size: large;
+}
+.bookModal p {
+    font-weight: bold;
+}
+.bookModal span {
+    font-weight: lighter;
+}
