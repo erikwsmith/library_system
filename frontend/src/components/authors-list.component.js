@@ -53,7 +53,7 @@ const AuthorsList = () => {
             };                        
         };
         fetchData();
-    }, [searchVal, deleted, deletedID] );
+    }, [searchVal, show]);
 
     return(
         <div className="container mt-4">
@@ -61,11 +61,7 @@ const AuthorsList = () => {
             <h1>Authors</h1>  
             <div className="input-group search-bar">                    
                 <input type="text" className="form-control " placeholder="Search..." 
-                    onChange={
-                        (e) => {
-                            setSearchVal(e.target.value);         
-                        }
-                    }
+                    onChange={(e) => {setSearchVal(e.target.value)}}
                 />
                 <button className="btn btn-success" type="button" onClick={goToAddAuthor}>
                     <i className="fa fa-plus"></i>
@@ -102,14 +98,14 @@ const AuthorsList = () => {
                 ))}
             </tbody>
         </table>
-        <Modal show={show} onHide={handleClose} backdrop='static' keyboard='false'>
+            <Modal show={show} onHide={handleClose} backdrop='static' keyboard='false'>
                 <Modal.Body>
                     <div className="text-center fw-bold fs-4 mb-4">Are you sure you want to delete?</div>
                     <div className="fw-bold mb-3 fs-5">Author Name: <span className="fw-normal">{deletedName}</span></div>                   
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={deleteAuthor} className="fw-bold btn-danger mx-auto author-button">
-                    Delete Book
+                    Delete
                     </Button>
                     <Button onClick={handleClose} className=" btn-secondary mx-auto author-button">
                     Cancel

@@ -83,7 +83,7 @@ const BooksList = () => {
         <div className="container mt-4">
             <div id="pageTitle">
                 <h1>Books</h1>  
-                <div class="input-group search-bar">                    
+                <div className="input-group search-bar">                    
                     <input type="text" className="form-control " placeholder="Search..." 
                         onChange={
                             (e) => {

@@ -1,7 +1,6 @@
 import {React, useState, useEffect, useRef} from 'react';
 import { useParams } from 'react-router-dom';
 import Multiselect from 'multiselect-react-dropdown';
-
 const {Button, Modal} = require('react-bootstrap');
 
 const EditBook = () => {
@@ -27,7 +26,8 @@ const EditBook = () => {
     const [biography, setBiography] = useState('');
     const lastNameRef = useRef();
     const firstNameRef = useRef();
-    // fetch records from backend on mount
+    const titleRef = useRef();
+    // fetch record from backend on mount
     useEffect( ()=>{
         const fetchData = async()=>{          
             //get all books
@@ -72,7 +72,6 @@ const EditBook = () => {
     const handleShow = () => setShow(true);
     const handleUpdateShow = () => setShowUpdateModel(true);
     const handleUpdateClose = () => setShowUpdateModel(false);
-    const handleSubmit = () => {};
     const checkValidity = (element) => {   
             if(element.current.value === ''){
                 if(element.current.classList.contains('is-valid')){element.current.classList.remove('is-valid')};
@@ -116,7 +115,11 @@ const EditBook = () => {
         setBiography('');  
     };
     const handleUpdate = () =>{
-        handleUpdateShow();
+        if(!title == ''){
+            handleUpdateShow();
+        }else{
+            checkValidity(titleRef);
+        };
     };
     const updateBook = async() =>{
         const book = {title, image, isbn, pages, author, binding, classification};
@@ -134,7 +137,6 @@ const EditBook = () => {
         if(response.ok){
             window.location = '/books';
         };
-
     };
     const updateFullName = (event, authorName)=> { 
         if(authorName === 'first_name'){
@@ -157,7 +159,8 @@ const EditBook = () => {
             <div className="form-group row">
                 <div className="col-xs-12 col-lg-6 mt-3">
                 <label htmlFor="ex1" className="fw-bold">Book Title</label>
-                    <input className="form-control" id="ex1" type="text" defaultValue={title} onChange={e => setTitle(e.target.value)}/>
+                    <input className="form-control" required id="ex1" type="text" value={title} ref={titleRef}
+                        onChange={e => {setTitle(e.target.value)}}/>
                 </div>
                 <div className="col-xs-12 col-lg-6 mt-3">
                     <label htmlFor="ex2" className="fw-bold">Cover Image URL</label>
@@ -268,27 +271,19 @@ const EditBook = () => {
                 </div>
             </Modal.Body>
             <Modal.Footer>
-                <Button onClick={submitAuthor} className="fw-bold btn-info mx-auto author-button">
-                Add Author
-                </Button>
-                <Button onClick={handleClose} className=" btn-secondary mx-auto author-button">
-                Cancel
-                </Button>
+                <Button onClick={submitAuthor} className="fw-bold btn-info mx-auto author-button">Add Author</Button>
+                <Button onClick={handleClose} className=" btn-secondary mx-auto author-button">Cancel</Button>
             </Modal.Footer>
-        </Modal>
-        <Modal show={showUpdateModal} onHide={handleClose} backdrop='static' keyboard='false'>
+            </Modal>
+            <Modal show={showUpdateModal} onHide={handleClose} backdrop='static' keyboard='false'>
                 <Modal.Body>
                     <div className="fw-bold fs-4 text-center">Save all changes?</div>                
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={updateBook} className=" btn-success mx-auto author-button">
-                    Save
-                    </Button>
-                    <Button onClick={handleUpdateClose} className=" btn-secondary mx-auto author-button">
-                    Cancel
-                    </Button>
+                    <Button onClick={updateBook} className=" btn-success mx-auto author-button">Save</Button>
+                        <Button onClick={handleUpdateClose} className=" btn-secondary mx-auto author-button">Cancel</Button>
                 </Modal.Footer>
-                </Modal>
+            </Modal>
         </div> 
     )
 };

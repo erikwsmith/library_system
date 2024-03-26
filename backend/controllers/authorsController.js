@@ -6,7 +6,11 @@ const getAuthors = async( req, res ) => {
     const authors = await Author.find({}).sort({});
     res.status(200).json(authors);
 };
-
+// retrieve a single author
+const getAuthor = async( req, res ) => {
+    const author = await Author.findById(req.params.id);
+    res.status(200).json(author);
+};
 // add a single author
 const addAuthor = async( req, res) => {
     const {first_name, middle_name, last_name, full_name, biography} = req.body;
@@ -16,6 +20,20 @@ const addAuthor = async( req, res) => {
     } catch (error){
         res.status(400).json({Error: error.message})
     };
+};
+// update an existing author
+const updateAuthor = async( req, res ) => {
+    const{id} = req.params;
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(404).json({Error: 'Author does not exist.'});
+    };
+    const author = await Author.findOneAndUpdate({_id: id}, {
+        ...req.body
+    });
+    if(!author){
+        return res.status(400).json({Error: 'Author does not exist.'});
+    };
+    res.status(200).json(author);
 };
 // delete an existing author
 const deleteAuthor = async(req, res)=>{
@@ -32,6 +50,8 @@ const deleteAuthor = async(req, res)=>{
 
 module.exports = {
     getAuthors,
+    getAuthor,
     addAuthor,
+    updateAuthor,
     deleteAuthor
 }

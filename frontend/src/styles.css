@@ -6,6 +6,12 @@ body {
 p {
     margin:auto
 }
+.nav-items {
+    display: flex;    
+}
+.navbar-brand {
+    font-size:x-large;
+}
 .title {
     min-width:150px;
 }
@@ -97,3 +103,10 @@ p {
 .bookModal span {
     font-weight: lighter;
 }
+.user-heading {
+    color: blue;
+}
+.author-heading {
+    color: blue;
+}
+
