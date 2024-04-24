@@ -16,6 +16,9 @@ const EditBook = () => {
     const [pages, setPages] = useState(null);
     const [classification, setClassification] = useState('');
     const [binding, setBinding] = useState('');
+    const [status, setStatus] = useState('');
+    const [holds, setHolds] = useState([]);
+    const [holdCount, setHoldCount] = useState(0);
     const [author, setAuthor] = useState('');
     const [authorList, setAuthorList] = useState([]);
     const [selectedAuthors, setSelectedAuthors] = useState([]);
@@ -27,6 +30,16 @@ const EditBook = () => {
     const lastNameRef = useRef();
     const firstNameRef = useRef();
     const titleRef = useRef();
+
+    const getStatus = (item) =>{
+        if(item.checkedOut === false && item.holds.length > 0){
+            return 'On Hold'
+        }else if(item.checkedOut === true){
+            return 'In Use'
+        }else{
+            return 'Available'
+        };
+    };
     // fetch record from backend on mount
     useEffect( ()=>{
         const fetchData = async()=>{          
@@ -37,12 +50,15 @@ const EditBook = () => {
                 setBook(bookJson);
                 setTitle(book.title);
                 setPages(book.pages);
-                setBinding(book.binding);  
+                setBinding(book.binding);
+                setStatus(getStatus(book));  
+                setHolds(book.holds);                  
                 setISBN(book.isbn);
                 setImage(book.image);    
                 setClassification(book.classification);   
                 setCreatedAt(book.createdAt);
                 setAuthor(book.author);
+                book.holds && book.holds.length > 0 ? setHoldCount(book.holds.length): setHoldCount(0);                          
             };            
         };
         const fetchAuthors = async() => {
@@ -63,9 +79,11 @@ const EditBook = () => {
             }
             setSelectedAuthors(selectedAuthorsArr);
         }
+
         fetchAuthors();
         fetchData();
-        mapAuthors();
+        mapAuthors();          
+             
     }, [createdAt, full_name]);
 
     const handleClose = () => {setShow(false);}
@@ -150,7 +168,7 @@ const EditBook = () => {
         };
     };
     return(
-        <div className="container mt-4">
+        <div className="container">
         <div className = "book-wrapper">
             <img src={image}></img>
             <h2>{title}</h2>
@@ -191,7 +209,23 @@ const EditBook = () => {
                 <div className="col-xs-12 col-lg-3 mt-3">
                     <label htmlFor="ex5" className="fw-bold">Pages</label>
                     <input className="form-control" id="ex5" type="number" defaultValue={pages} onChange={e => setPages(e.target.value)}/>
+                </div>
+                <div className="col-xs-12 col-lg-3 mt-3">
+                    <label htmlFor="bookStatus" className="fw-bold">Status</label>
+                    <input className="form-control" id="bookStatus" type="text" readOnly defaultValue={status}/>
                 </div>  
+                <div className="col-xs-12 col-lg-6 mt-3">
+                        <label htmlFor="ex5" className="fw-bold">Holds</label>
+                        <div class="input-group">
+                            <span class="input-group-text">{holdCount}</span>
+                            <select className="form-select" id="ex5" value={holds} readOnly>
+                        {holds && holds.map((item) => (                            
+                                <option>{item}</option>
+                            )
+                        )}                      
+                        </select>
+                        </div>
+                    </div>  
                 <div className="author-select col-12 mt-3">                       
                     <label htmlFor="ex4" className="fw-bold">Author</label>
                     <div className="input-group">
@@ -226,7 +260,7 @@ const EditBook = () => {
                 <a href="/books"><Button className="btn btn-danger add-book-button fs-6">Cancel</Button></a>
             </div>
         </form>
-        <Modal show={show} onHide={handleClose} backdrop='static' keyboard='false'>
+        <Modal show={show} onHide={handleClose} backdrop='static' keyboard='false' style={{marginTop: 75}}>
             <Modal.Body>
                 <div className = "fw-bold text-center fs-5">Add a New Author</div>
                 <div className="mb-3 mt-3 row">
@@ -275,7 +309,7 @@ const EditBook = () => {
                 <Button onClick={handleClose} className=" btn-secondary mx-auto author-button">Cancel</Button>
             </Modal.Footer>
             </Modal>
-            <Modal show={showUpdateModal} onHide={handleClose} backdrop='static' keyboard='false'>
+            <Modal show={showUpdateModal} onHide={handleClose} backdrop='static' keyboard='false' style={{marginTop: 75}}>
                 <Modal.Body>
                     <div className="fw-bold fs-4 text-center">Save all changes?</div>                
                 </Modal.Body>

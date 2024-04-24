@@ -15,9 +15,9 @@ const getBook = async( req, res ) => {
 
 // add a single book
 const addBook = async( req, res) => {
-    const {title, image, isbn, author, pages, binding} = req.body;
+    const {title, image, isbn, author, pages, binding, checkedOut, holds, type} = req.body;
     try {
-        const book = await Book.create({title, image, isbn, author, pages, binding});
+        const book = await Book.create({title, image, isbn, author, pages, binding, checkedOut, holds, type});
         res.status(200).json(book);
     } catch (error){
         res.status(400).json({Error: error.message})

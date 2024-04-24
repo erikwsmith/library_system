@@ -56,7 +56,7 @@ const AuthorsList = () => {
     }, [searchVal, show]);
 
     return(
-        <div className="container mt-4">
+        <div className="container">
         <div id="pageTitle">
             <h1>Authors</h1>  
             <div className="input-group search-bar">                    
@@ -98,7 +98,7 @@ const AuthorsList = () => {
                 ))}
             </tbody>
         </table>
-            <Modal show={show} onHide={handleClose} backdrop='static' keyboard='false'>
+            <Modal show={show} onHide={handleClose} backdrop='static' keyboard='false' style={{marginTop: 75}}>
                 <Modal.Body>
                     <div className="text-center fw-bold fs-4 mb-4">Are you sure you want to delete?</div>
                     <div className="fw-bold mb-3 fs-5">Author Name: <span className="fw-normal">{deletedName}</span></div>                   

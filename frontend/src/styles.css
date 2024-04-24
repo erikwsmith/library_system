@@ -73,23 +73,38 @@ p {
 .trashIcon{
     font-size: large;
 }
-.book-wrapper {
+.book-wrapper, .music-wrapper {
     display:flex;
     justify-content: start;
     align-content: center;
     margin: 3px;
     padding-bottom: 20px;
 }
+.container {
+    margin-top: 100px;
+}
 .book-wrapper img {
-    width:100px;
-    height:150px;
+    width:130px;
+    height:180px;
     margin-top:15px;
 }
-.book-wrapper h2{
+.errorModal {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-self: center;
+    font-weight: bold;    
+}
+.music-wrapper img {
+    width:170px;
+    height:170px;
+    margin-top:15px;
+}
+.book-wrapper h2, .music-wrapper h2{
     align-self:center;
     margin-left:15px;
 }
-.bookModal{
+.bookModal, .musicModal{
     display:flex;
     flex-direction: column;
     justify-content: center;
@@ -97,16 +112,29 @@ p {
     margin-left:25px;
     font-size: large;
 }
-.bookModal p {
+.bookModal p, .musicModal p {
     font-weight: bold;
+    margin-bottom: 10px;
 }
-.bookModal span {
+.bookModal span, .musicModal span {
     font-weight: lighter;
 }
-.user-heading {
-    color: blue;
+.musicImg {
+    height: 180px;
+    width: 180px;
+    margin-top: 15px
 }
-.author-heading {
-    color: blue;
+.user-heading, .author-heading {
+    color: black;
+    font-weight: lighter;
 }
+
+.bookHolds h5, .movieHolds h5, .musicHolds h5{
+    text-decoration: underline;
+}
+.holdItems {
+    font-weight:400;
+    font-size: large;
+}
+
 

@@ -27,7 +27,10 @@ const BooksList = () => {
             let bookJson = await bookQuery.json();
             if(bookQuery.ok) { 
                 const filterResults = bookJson.filter((item)=> {
-                    const pageNum = item.pages.toString();
+                    let pageNum = 0;
+                    item.pages && item.pages.length > 0 ? pageNum = item.pages.toString() : pageNum = 0;
+                    let holdNum = 0;
+                    item.holds && item.holds.length > 0 ? holdNum = item.holds.toString() : holdNum = 0;
                     let authorString = '';
                     let authorArray = item.author.map((item)=>{
                         authorString += getAuthor(item) + ' ';
@@ -35,6 +38,7 @@ const BooksList = () => {
                     if (item.title.toLowerCase().includes(searchVal.toLowerCase()) ||
                         item.isbn.includes(searchVal) ||
                         pageNum.includes(searchVal) ||
+                        holdNum.includes(searchVal) ||
                         item.binding.toLowerCase().includes(searchVal.toLowerCase()) ||
                         authorString.toLowerCase().includes(searchVal.toLowerCase()) ||
                         item.classification.toLowerCase().includes(searchVal.toLocaleLowerCase())                        
@@ -73,14 +77,23 @@ const BooksList = () => {
         let image = parentEl.firstChild.firstChild.getAttribute("src");
         let title = parentEl.getElementsByTagName("td")[1].innerText;
         let isbn = parentEl.getElementsByTagName("td")[3].innerHTML;
-        let bookID = parentEl.getElementsByTagName("td")[7].firstChild.getAttribute("href");
+        let bookID = parentEl.getElementsByTagName("td")[9].firstChild.getAttribute("href");
         setDeletedImage(image);
         setDeletedTitle(title);
         setDeletedISBN(isbn);
         setDeletedID(bookID);
     };
+    const getStatus = (item) =>{
+        if(item.checkedOut === false && item.holds.length > 0){
+            return 'On Hold'
+        }else if(item.checkedOut === true){
+            return 'In Use'
+        }else{
+            return 'Available'
+        };
+    };
     return (
-        <div className="container mt-4">
+        <div className="container">
             <div id="pageTitle">
                 <h1>Books</h1>  
                 <div className="input-group search-bar">                    
@@ -107,6 +120,8 @@ const BooksList = () => {
                         <th>Classification</th>
                         <th>Format</th>
                         <th>Pages</th>
+                        <th>Status</th>
+                        <th>Holds</th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -125,6 +140,8 @@ const BooksList = () => {
                             <td className="align-middle">{item.classification}</td>
                             <td className="align-middle">{item.binding}</td>
                             <td className="align-middle">{item.pages}</td>
+                            <td className="align-middle">{getStatus(item)}</td>
+                            <td className="align-middle"> {item.holds ? item.holds.length : 0}</td>
                             <td className="align-middle actionButtons">
                                 <a href={"/books/" + item._id} className="btn btn-sm btn-primary" data-bs-toggle="tooltip" 
                                     data-bs-placement="bottom" title="Edit">
@@ -141,7 +158,7 @@ const BooksList = () => {
                     ))}
                 </tbody>
             </table>
-            <Modal show={show} onHide={handleClose} backdrop='static' keyboard='false'>
+            <Modal show={show} onHide={handleClose} backdrop='static' keyboard='false' style={{marginTop: 75}}>
                 <Modal.Body>
                     <div className="text-center fw-bold fs-4">Are you sure you want to delete?</div>
                     <div className = "book-wrapper">

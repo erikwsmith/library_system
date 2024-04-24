@@ -35,7 +35,7 @@ const AddBook = () =>{
 
     const handleSubmit = async(e) => {
         e.preventDefault();
-        const book = {title, image, isbn, author, pages, classification, binding };
+        const book = {title, image, isbn, author, pages, classification, binding, type: 'Book' };
         const response = await fetch('http://localhost:4000/books/add', {
             method: 'POST',
             body: JSON.stringify(book),
@@ -120,13 +120,13 @@ const AddBook = () =>{
     const handleClose = () => {setShow(false); clearAuthorForm();}
     const handleShow = () => setShow(true);
     return(
-        <div className="container mt-4">
+        <div className="container">
         <h2>Add a Book</h2>
         <form onSubmit={handleSubmit}>
             <div className="form-group row">
                 <div className="col-xs-12 col-lg-6 mt-3">
                 <label htmlFor="ex1" className="fw-bold">Book Title</label>
-                    <input className="form-control" id="ex1" type="text" value={title} onChange={(e)=>setTitle(e.target.value)}/>
+                    <input className="form-control" id="ex1" type="text" required value={title} onChange={(e)=>setTitle(e.target.value)}/>
                 </div>
                 <div className="col-xs-12 col-lg-6 mt-3">
                     <label htmlFor="ex2" className="fw-bold">Cover Image URL</label>
@@ -134,7 +134,7 @@ const AddBook = () =>{
                 </div>                    
                 <div className="col-xs-12 col-lg-3 mt-3">
                     <label htmlFor="ex3" className="fw-bold">ISBN</label>
-                    <input className="form-control" id="ex3" type="text" value={isbn} onChange={(e)=>setISBN(e.target.value)}/>
+                    <input className="form-control" id="ex3" type="text" required value={isbn} onChange={(e)=>setISBN(e.target.value)}/>
                 </div>
                 <div className="col-xs-12 col-lg-3 mt-3">
                     <label htmlFor="classification" className="fw-bold">Classification</label>
@@ -184,7 +184,7 @@ const AddBook = () =>{
                         <button className="btn btn-success text-white btn-outline-default" type="button" onClick={handleShow}>
                             <i className="fa fa-plus"></i>
                         </button>
-                        <Modal show={show} onHide={handleClose} backdrop='static' keyboard='false'>
+                        <Modal show={show} onHide={handleClose} backdrop='static' keyboard='false' style={{marginTop: 75 }}>
                             <Modal.Body>
                                 <div className = "fw-bold text-center fs-5">Add a New Author</div>
                                 <div className="mb-3 mt-3 row">

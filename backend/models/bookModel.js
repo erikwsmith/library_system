@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const bookSchema = new Schema({
     image: {type: String},
     title: {type: String, required: true, trim: true, minlength: 1, unique: false},
-    isbn: {type: String, required: true, minlength: 10},
+    isbn: {type: String, required: true},
     author: [String],
     category: {type: String},
     classification: {type: String},
@@ -14,7 +14,9 @@ const bookSchema = new Schema({
     binding: {type: String},
     publisher: {type: String},
     publishDate: {type: Date},
-    checkedOut: {type: Boolean}
+    checkedOut: {type: Boolean},
+    holds: [String],
+    type: {type: String}
 }, {
     timestamps: true
 }, {
