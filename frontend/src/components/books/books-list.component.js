@@ -9,7 +9,8 @@ const BooksList = () => {
     const [show, setShow] = useState(false);
     const [deletedImage, setDeletedImage] = useState('');
     const [deletedTitle, setDeletedTitle] = useState('');
-    const [deletedISBN, setDeletedISBN] = useState(null);
+    const [deletedISBN, setDeletedISBN] = useState('');
+    const [deletedCallNumber, setDeletedCallNumber] = useState('');
     const [deletedID, setDeletedID] = useState('');
     const [deleted, setDeleted] = useState('');
 
@@ -27,21 +28,20 @@ const BooksList = () => {
             let bookJson = await bookQuery.json();
             if(bookQuery.ok) { 
                 const filterResults = bookJson.filter((item)=> {
-                    let pageNum = 0;
-                    item.pages && item.pages.length > 0 ? pageNum = item.pages.toString() : pageNum = 0;
-                    let holdNum = 0;
-                    item.holds && item.holds.length > 0 ? holdNum = item.holds.toString() : holdNum = 0;
+                    let pageNum = '';
+                    item.pages  > 0 ? pageNum = item.pages.toString() : pageNum = '0';
+                    let holdNum = '';
+                    item.holds && item.holds.length > 0 ? holdNum = (item.holds.length).toString() : holdNum = '0';
                     let authorString = '';
-                    let authorArray = item.author.map((item)=>{
-                        authorString += getAuthor(item) + ' ';
+                    let authorArray = item.author.map((a)=>{
+                        authorString += getAuthor(a) + ' ';
                     });                                                       
-                    if (item.title.toLowerCase().includes(searchVal.toLowerCase()) ||
-                        item.isbn.includes(searchVal) ||
-                        pageNum.includes(searchVal) ||
-                        holdNum.includes(searchVal) ||
-                        item.binding.toLowerCase().includes(searchVal.toLowerCase()) ||
-                        authorString.toLowerCase().includes(searchVal.toLowerCase()) ||
-                        item.classification.toLowerCase().includes(searchVal.toLocaleLowerCase())                        
+                    if (item.title.toLowerCase().includes(searchVal.toLowerCase())|| pageNum.includes(searchVal.toLowerCase()) ||
+                        holdNum.includes(searchVal.toLowerCase()) || authorString.toLowerCase().includes(searchVal.toLowerCase()) ||
+                        item.binding && item.binding.toLowerCase().includes(searchVal.toLowerCase()) || 
+                        item.classification && item.classification.toLowerCase().includes(searchVal.toLowerCase()) ||
+                        item.status && item.status.toLowerCase().includes(searchVal.toLowerCase()) || 
+                        item.callNumber && item.callNumber.toLowerCase().includes(searchVal.toLowerCase())
                     ) {
                         return item;
                     }
@@ -76,15 +76,16 @@ const BooksList = () => {
         };
         let image = parentEl.firstChild.firstChild.getAttribute("src");
         let title = parentEl.getElementsByTagName("td")[1].innerText;
-        let isbn = parentEl.getElementsByTagName("td")[3].innerHTML;
+        let callNumber = parentEl.getElementsByTagName("td")[4].innerHTML;
         let bookID = parentEl.getElementsByTagName("td")[9].firstChild.getAttribute("href");
         setDeletedImage(image);
         setDeletedTitle(title);
-        setDeletedISBN(isbn);
+        setDeletedCallNumber(callNumber)
         setDeletedID(bookID);
+        setDeletedCallNumber(callNumber);
     };
     const getStatus = (item) =>{
-        if(item.checkedOut === false && item.holds.length > 0){
+        if(!item.checkedOut && item.holds.length > 0){
             return 'On Hold'
         }else if(item.checkedOut === true){
             return 'In Use'
@@ -115,12 +116,12 @@ const BooksList = () => {
                     <tr>
                         <th>Image</th>
                         <th>Title</th>
-                        <th>Author</th>
-                        <th>ISBN</th>
+                        <th>Status</th>
+                        <th>Author</th>                        
+                        <th>Call Number</th>
                         <th>Classification</th>
                         <th>Format</th>
-                        <th>Pages</th>
-                        <th>Status</th>
+                        <th>Pages</th>                        
                         <th>Holds</th>
                         <th>Edit</th>
                         <th>Delete</th>
@@ -131,16 +132,16 @@ const BooksList = () => {
                         <tr key={item._id}>
                             <td style={{width:"10%"}}><img src={item.image} className="img-thumbnail" alt="Image Not Found"></img></td>
                             <td className="align-middle">{item.title}</td>
+                            <td className="align-middle">{getStatus(item)}</td>
                             <td className="align-middle">
                                 {item.author && item.author.map((record)=>{
                                     return <p>{getAuthor(record)}</p>
                                 })} 
                             </td>
-                            <td className="align-middle">{item.isbn}</td>
+                            <td className="align-middle">{item.callNumber}</td>
                             <td className="align-middle">{item.classification}</td>
                             <td className="align-middle">{item.binding}</td>
                             <td className="align-middle">{item.pages}</td>
-                            <td className="align-middle">{getStatus(item)}</td>
                             <td className="align-middle"> {item.holds ? item.holds.length : 0}</td>
                             <td className="align-middle actionButtons">
                                 <a href={"/books/" + item._id} className="btn btn-sm btn-primary" data-bs-toggle="tooltip" 
@@ -168,8 +169,8 @@ const BooksList = () => {
                                 <p>Title: <span>{deletedTitle}</span></p>
                             </div>
                             <div>
-                                <p>ISBN: <span>{deletedISBN}</span></p>
-                            </div>
+                                <p>Call Number: <span>{deletedCallNumber}</span></p>
+                            </div>                           
                         </div>
                     </div>
                 </Modal.Body>

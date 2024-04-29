@@ -1,27 +1,29 @@
 import {React, useState, useEffect, useRef} from 'react';
 import { useParams } from 'react-router-dom';
 import Multiselect from 'multiselect-react-dropdown';
-const {Button, Modal} = require('react-bootstrap');
+import { v4 as uuidv4} from 'uuid';
+const {Button, Modal, Collapse} = require('react-bootstrap');
 
 const EditMusic = () => {
 
     const {id} = useParams();
-    const[error, setError] = useState(null);
+    const[error, setError] = useState('');
     const [show, setShow] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [createdAt, setCreatedAt] = useState('');
     const [music, setMusic] = useState([]);
     const [title, setTitle] = useState('');    
     const [image, setImage] = useState('');   
+    const [callNumber, setCallNumber] = useState(''); 
     const [format, setFormat] = useState(''); 
     const [runtime, setRuntime] = useState(''); 
     const [genre, setGenre] = useState('');
     const [releaseDate, setReleaseDate] = useState(''); 
     const [tracks, setTracks] = useState([]); 
-    const [trackCount, setTrackCount] = useState(null);
+    const [trackCount, setTrackCount] = useState(0);
     const [status, setStatus] = useState('');
     const [holds, setHolds] = useState([]);
-    const [holdCount, setHoldCount] = useState(null);   
+    const [holdCount, setHoldCount] = useState(0);   
     const titleRef = useRef();
     const [artists, setArtists] = useState('');
     const [artistsList, setArtistsList] = useState([]);
@@ -35,6 +37,10 @@ const EditMusic = () => {
     const lastNameRef = useRef();
     const firstNameRef = useRef();
     const groupNameRef = useRef();
+    const trackListRef = useRef();
+    const [collapse, setCollapse] = useState(false);
+    const toggleRef = useRef();
+    const [musicCount, setMusicCount] = useState(0);
     
     const getStatus = (item) =>{
         if(item.checkedOut === false && item.holds && item.holds.length > 0){
@@ -45,7 +51,7 @@ const EditMusic = () => {
             return 'Available'
         };
     };
-    const handleClose = () => {setShow(false);}
+    const handleClose = () => {setShow(false); clearArtistForm()};
     const handleShow = () => setShow(true);
     const handleUpdateShow = () => setShowUpdateModal(true);
     const handleUpdateClose = () => setShowUpdateModal(false);
@@ -66,8 +72,8 @@ const EditMusic = () => {
             checkValidity(titleRef);
         };
     };
-    const updateMusic = async() =>{
-        const music = {title, image, format, runtime, genre, releaseDate, artists};
+    const updateMusic = async() =>{           
+        const music = {title, image, format, runtime, genre, releaseDate, artists, callNumber, tracks};
         const response = await fetch('http://localhost:4000/music/' + id, {
             method: 'PATCH',
             body: JSON.stringify(music),
@@ -79,16 +85,19 @@ const EditMusic = () => {
         if(!response.ok){
             setError(json.error);
         }
-        if(response.ok){
+        if(response.ok){            
             window.location = '/music';
         };
     };
     const submitArtist = async(e) => {
         e.preventDefault();  
-        checkValidity(groupNameRef);
-        checkValidity(lastNameRef);       
-        const artist = {group_name, last_name, full_name, biography};
-        if(group_name !='' || last_name !=''){
+        if(group_name === '' && (last_name === '' || first_name === '')){
+            checkValidity(groupNameRef);
+            checkValidity(lastNameRef); 
+            checkValidity(firstNameRef);
+            return;
+        }             
+        const artist = {group_name, last_name, full_name, first_name, middle_name, biography};        
             const response = await fetch('http://localhost:4000/artists/add', {
                 method: 'POST',
                 body: JSON.stringify(artist),
@@ -99,15 +108,14 @@ const EditMusic = () => {
             const json = await response.json();
     
             if(!response.ok){
-                setError(json.error);
+                setError(json.error);                
             }
             //reset form if OK
             if(response.ok){            
                 clearArtistForm();
-                console.log('New Artist Added!', json);     
-                handleClose();         
-            }
-        }        
+                console.log('New Artist Added!', json);         
+            }                             
+            handleClose(); 
     }   
     const clearArtistForm = ()=> {
         setFirstName('');
@@ -131,6 +139,7 @@ const EditMusic = () => {
             setFullName(event.target.value);
         };
     };
+    
     // fetch record from backend on mount
     useEffect( ()=>{
         const fetchData = async()=>{          
@@ -148,34 +157,67 @@ const EditMusic = () => {
                 setReleaseDate(music.releaseDate);
                 setGenre(music.genre);
                 setRuntime(music.runtime);     
-                setFormat(music.format);        
+                setFormat(music.format);   
+                setCallNumber(music.callNumber);     
                 setArtists(music.artists);      
-                setCreatedAt(music.createdAt);               
+                setCreatedAt(music.createdAt);
+                setTracks(music.tracks);
+                setMusicCount(music.length);
             };            
-        };
+        };       
         const fetchArtists = async() => {
             const response = await fetch('http://localhost:4000/artists');
             const json = await response.json();
             if(response.ok){
                 setArtistsList(json);
             }
-        };
-        const mapArtists = async() => {
+        };          
+        const mapArtists = async() => {            
             let selectedArtistsArr = [];
             for (let i = 0; i < artistsList.length; i++){
-                artistsList.map((obj)=>{
+                artistsList.map((obj)=> {
                     if(obj._id === music.artists[i]){
                         selectedArtistsArr.push(obj);
                     }
                 })
             }
-            setSelectedArtists(selectedArtistsArr);
+            setSelectedArtists(selectedArtistsArr);                   
         };
          fetchData();
          fetchArtists();
-         mapArtists();           
-    }, [createdAt, genre, full_name]);    
+         mapArtists(); 
+    }, [createdAt, full_name, musicCount]);  
 
+    const toggleCollapse = (element) => {   
+        if(collapse){
+            element.current.innerHTML = '<span class="material-symbols-outlined">expand_less</span>'
+        }else{
+            element.current.innerHTML = '<span class="material-symbols-outlined">expand_more</span>'        
+        };
+    };
+    const addTrack = async() => { 
+        const newTrackObj = {id: uuidv4(), title: ''};
+        tracks.push(newTrackObj);
+        setTrackCount(tracks.length);
+    }
+    const deleteTrack =(e) =>{
+        e.preventDefault();              
+        let clickedIndex=parseInt((e.target.parentElement).firstChild.innerText) - 1;         
+        console.log(tracks[clickedIndex]);
+        let newArr = tracks;
+        newArr.splice(newArr.indexOf(tracks[clickedIndex]),1);
+        setTracks(newArr);
+        setTrackCount(newArr.length);
+        //console.log(tracks);         
+    }
+    const updateTracks =(id, input) => {
+        for(let i = 0; i < tracks.length; i++){
+            if(tracks[i].id === id){
+                tracks[i].title = input;
+            };
+        };
+        setTracks(tracks);        
+    }
     return(
         <div className="container">
             <div className = "music-wrapper">                
@@ -185,24 +227,29 @@ const EditMusic = () => {
             <form>
                 <div className="form-group row">
                     <div className="col-xs-12 col-lg-6 mt-3">
-                    <label htmlFor="ex1" className="fw-bold">Title</label>
-                        <input className="form-control" required id="ex1" type="text" value={title} ref={titleRef}
+                    <label className="fw-bold">Title</label>
+                        <input className="form-control" required type="text" value={title} ref={titleRef}
                             onChange={e => {setTitle(e.target.value)}}/>
                     </div>
                     <div className="col-xs-12 col-lg-6 mt-3">
-                        <label htmlFor="ex2" className="fw-bold">Cover Image URL</label>
-                        <input className="form-control" id="ex2" type="text" defaultValue={image} onChange={e => setImage(e.target.value)}/>                    
+                        <label className="fw-bold">Cover Image URL</label>
+                        <input className="form-control" type="text" defaultValue={image} onChange={e => setImage(e.target.value)}/>                    
                     </div> 
                     <div className="col-xs-12 col-lg-3 mt-3">
-                        <label htmlFor="ex6" className="fw-bold">Format</label>
-                        <select className="form-select" id="ex6" value={format} onChange={e => setFormat(e.target.value)}>
+                        <label className="fw-bold">Call Number</label>
+                        <input className="form-control" type="text" defaultValue={callNumber}
+                            onChange={e => setCallNumber(e.target.value)}/>
+                    </div>       
+                    <div className="col-xs-12 col-lg-3 mt-3">
+                        <label className="fw-bold">Format</label>
+                        <select className="form-select" value={format} onChange={e => setFormat(e.target.value)}>
                             <option></option>
                             <option>Audio CD</option>                        
                         </select>
                     </div>  
                     <div className="col-xs-12 col-lg-3 mt-3">
-                        <label htmlFor="ex6" className="fw-bold">Genre</label>
-                        <select className="form-select" id="ex6" value={genre} onChange={e => setGenre(e.target.value)}>
+                        <label className="fw-bold">Genre</label>
+                        <select className="form-select" value={genre} onChange={e => setGenre(e.target.value)}>
                             <option></option>  
                             <option>Classical</option>
                             <option>Country</option>
@@ -213,63 +260,89 @@ const EditMusic = () => {
                         </select>
                     </div> 
                     <div className="col-xs-12 col-lg-3 mt-3">
-                        <label htmlFor="ex5" className="fw-bold">Tracks</label>
-                        <input className="form-control" id="ex5" type="number" defaultValue={trackCount} 
-                            onChange={e => setTrackCount(e.target.value)}/>
-                    </div> 
-                    <div className="col-xs-12 col-lg-3 mt-3">
-                        <label htmlFor="ex5" className="fw-bold">Runtime</label>
-                        <input className="form-control" id="ex5" type="number" defaultValue={runtime} 
+                        <label className="fw-bold">Runtime (minutes)</label>
+                        <input className="form-control" type="number" defaultValue={runtime} 
                             onChange={e => setRuntime(e.target.value)}/>
                     </div> 
                     <div className="col-xs-12 col-lg-3 mt-3">
-                        <label htmlFor="ex5" className="fw-bold">Released</label>
-                        <input className="form-control" id="ex5" type="number" defaultValue={releaseDate} 
+                        <label className="fw-bold">Released</label>
+                        <input className="form-control" type="number" defaultValue={releaseDate} 
                             onChange={e => setReleaseDate(e.target.value)}/>
                     </div>   
                     <div className="col-xs-12 col-lg-3 mt-3">
-                        <label htmlFor="bookStatus" className="fw-bold">Status</label>
-                        <input className="form-control" id="bookStatus" type="text" readOnly defaultValue={status}/>
+                        <label className="fw-bold">Status</label>
+                        <input className="form-control" type="text" readOnly disabled defaultValue={status}/>
                     </div>  
                     <div className="col-xs-12 col-lg-6 mt-3">
-                        <label htmlFor="ex7" className="fw-bold">Holds</label>
+                        <label className="fw-bold">Holds</label>
                         <div className="input-group">
                             <span className="input-group-text">{holdCount}</span>
-                            <select className="form-select" id="ex7" value={holds} readOnly>
-                        {holds && holds.map((item) => (                            
-                                <option>{item}</option>
-                            )
-                        )}                      
+                            <select className="form-select" value={holds} readOnly>
+                                {holds && holds.map((item) => (                            
+                                        <option>{item}</option>
+                                    )
+                                )}                      
                         </select>
                         </div>
-                    </div> 
+                    </div>                     
                     <div className="author-select col-12 mt-3">                       
-                    <label htmlFor="ex4" className="fw-bold">Artist</label>
-                    <div className="input-group">
-                        <Multiselect                                                 
-                        onKeyPressFn={function noRefCheck() {}}       
-                        onRemove={(event)=>{
-                            setArtists(event);
-                        }}   
-                        onSelect={(list, item)=>{
-                            setArtists(list);
-                        }}                                      
-                        onSearch={function noRefCheck() {}}     
-                        options={
-                            artistsList
-                        }
-                        displayValue='full_name'
-                        avoidHighlightFirstOption={true}
-                        closeIcon='cancel'
-                        placeholder='Select an Artist'     
-                        selectedValues={selectedArtists}                       
-                        >                                       
-                        </Multiselect>
-                        <button className="btn btn-success text-white btn-outline-default" type="button" onClick={handleShow}>
-                            <i className="fa fa-plus"></i>
-                        </button>    
-                    </div> 
-                </div>                                      
+                        <label className="fw-bold">Artist</label>
+                        <div className="input-group artistSelect">
+                            <Multiselect                                                 
+                            onKeyPressFn={function noRefCheck() {}}       
+                            onRemove={(event)=>{
+                                setArtists(event);
+                            }}   
+                            onSelect={(list, item)=>{
+                                setArtists(list);
+                            }}                                      
+                            onSearch={function noRefCheck() {}}     
+                            options={
+                                artistsList
+                            }
+                            displayValue='full_name'
+                            avoidHighlightFirstOption={true}
+                            closeIcon='cancel'
+                            placeholder='Select an Artist'     
+                            selectedValues={selectedArtists}                       
+                            >                                       
+                            </Multiselect>
+                            <button className="btn btn-success text-white btn-outline-default" type="button" onClick={handleShow}>
+                                <i className="fa fa-plus"></i>
+                            </button>    
+                        </div> 
+                    </div>  
+                    <div className="col-xs-12 col-lg-12 mt-3 ">
+                        <div className="input-group col-xs-12 col-lg-3 mt-3 toggleInput">
+                            <label className="fw-bold mt-2">Tracks</label> 
+                            <div className="input-group mx-2">  
+                                <input type="text" id="trackCountInput" className="form-control" readOnly value={trackCount}/> 
+                                <Button className="btn btn-light border addTrack" onClick={addTrack}>Add</Button>                 
+                                <button className="btn btn-light btn-sm input-group-text border toggleButton" type="button" ref={toggleRef} 
+                                    onClick={()=>{setCollapse(!collapse); toggleCollapse(toggleRef)}}
+                                    aria-controls="tracksDiv" aria-expanded={collapse}>                            
+                                    <span className="material-symbols-outlined">expand_less</span>                            
+                                </button> 
+                            </div>  
+                        </div>
+                        <div className="col-xs-12 col-lg-12 mt-3">                        
+                            <Collapse in={!collapse}>
+                                <div id="tracksDiv" ref={trackListRef} className="col-xs-12 col-lg-12 mt-3">
+                                    {tracks && tracks.map((item, key)=>(                                                                      
+                                        <div key={item.id}className="input-group" >
+                                            <span className="input-group-text trackCount">{key + 1}</span>
+                                            <input className="form-control" type="text" defaultValue={item.title}
+                                                onChange={(e)=>{updateTracks(item.id, e.target.value)}}/>
+                                            <Button className="btn btn-sm btn-danger border" data-bs-toggle="tooltip" 
+                                                data-bs-placement="bottom" title="Delete" onClick={deleteTrack}>
+                                                    <i className="fa fa-trash-o trashIcon"></i>
+                                            </Button>
+                                        </div>                                        
+                                    ))}                                        
+                                </div>                                                   
+                            </Collapse>                                                    
+                        </div>   
+                    </div>                                                       
                 </div>
                 <br/>
                 <div className="col-12 mt-4 mx-auto text-center">
@@ -281,10 +354,10 @@ const EditMusic = () => {
                 <Modal.Body>
                     <div className = "fw-bold text-center fs-5">Add a New Artist</div>
                     <div className="mb-3 mt-3 row">
-                        <label htmlFor="groupName" className="col-sm-3 col-form-label">Group Name</label>
+                        <label className="col-sm-3 col-form-label">Group Name</label>
                         <div className="col-sm-9">
-                        <input type="text" className="form-control needs-validation" id="groupName"
-                            ref={groupNameRef} value={group_name} required
+                        <input type="text" className="form-control needs-validation" 
+                            ref={groupNameRef} value={group_name} 
                             onChange={(e)=>{setGroupName(e.target.value); updateFullName(e, "group_name");
                             checkValidity(groupNameRef)}}
                             />
@@ -324,7 +397,7 @@ const EditMusic = () => {
                         </div>                            
                     </div> 
                     <div className="mb-3 mt-3 row">
-                        <label htmlFor="Biography" className="col-sm-3 col-form-label">Biography</label>
+                        <label htmlFor="biography" className="col-sm-3 col-form-label">Biography</label>
                         <div className="col-sm-9">
                         <textarea className="form-control" id="biography" rows="4" value={biography} 
                             onChange={(e)=>setBiography(e.target.value)}/>

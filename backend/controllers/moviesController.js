@@ -15,9 +15,9 @@ const getMovie = async( req, res ) => {
 
 // add a single movie
 const addMovie = async( req, res) => {
-    const {title, image, format, runtime, releaseDate, rating, checkedOut, type} = req.body;
+    const {title, image, format, runtime, releaseDate, rating, checkedOut, type, summary, callNumber} = req.body;
     try {
-        const movie = await Movie.create({title, image, format, runtime, releaseDate, rating, checkedOut, type});
+        const movie = await Movie.create({title, image, format, runtime, releaseDate, rating, checkedOut, type, summary, callNumber});
         res.status(200).json(movie);
     } catch (error){
         res.status(400).json({Error: error.message})

@@ -15,9 +15,9 @@ const getMusic = async( req, res ) => {
 
 // add a single music record
 const addMusic = async( req, res) => {
-    const {title, image, artists, format, genre, tracks, runtime, releaseDate, checkedOut, type} = req.body;
+    const {title, image, artists, format, genre, tracks, runtime, releaseDate, checkedOut, type, callNumber} = req.body;
     try {
-        const music = await Music.create({title, image, artists, format, genre, tracks, runtime, releaseDate, checkedOut, type});
+        const music = await Music.create({title, image, artists, format, genre, tracks, runtime, releaseDate, checkedOut, type, callNumber});
         res.status(200).json(music);
     } catch (error){
         res.status(400).json({Error: error.message})

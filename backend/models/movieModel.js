@@ -11,6 +11,8 @@ const movieSchema = new Schema({
     releaseDate: {type: Number},
     checkedOut: {type: Boolean},
     type: {type: String},
+    callNumber: {type: String},
+    summary: {type: String},
     holds: [String]
 }, {
     timestamps: true

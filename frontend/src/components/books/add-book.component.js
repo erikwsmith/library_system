@@ -7,6 +7,10 @@ const AddBook = () =>{
     const[image, setImage] = useState('');
     const[isbn, setISBN] = useState('');
     const[author, setAuthor] = useState([]);
+    const [status, setStatus] = useState('Available');
+    const [holds, setHolds] = useState([]);
+    const [holdCount, setHoldCount] = useState(0);
+    const [usersList, setUsersList] = useState([]);
     const[authorList, setAuthorList] = useState([]); 
     const[pages, setPages] = useState(null);
     const[binding, setBinding] = useState('');
@@ -18,6 +22,8 @@ const AddBook = () =>{
     const[last_name, setLastName] = useState('');
     const[full_name, setFullName] = useState('');
     const[biography, setBiography] = useState('');
+    const[summary, setSummary] = useState('');
+    const[callNumber, setCallNumber] = useState('');
     
     const lastNameRef = useRef();
     const firstNameRef = useRef();
@@ -35,7 +41,7 @@ const AddBook = () =>{
 
     const handleSubmit = async(e) => {
         e.preventDefault();
-        const book = {title, image, isbn, author, pages, classification, binding, type: 'Book' };
+        const book = {title, image, isbn, author, pages, classification, binding, type: 'Book', callNumber, summary};
         const response = await fetch('http://localhost:4000/books/add', {
             method: 'POST',
             body: JSON.stringify(book),
@@ -73,16 +79,15 @@ const AddBook = () =>{
             setFullName(event.target.value + ', ' + first_name + ' ' + middle_name);
         };
     };
-    const checkValidity = (element) => {   
-        console.log(element);
-            if(element.current.value === ''){
-                if(element.current.classList.contains('is-valid')){element.current.classList.remove('is-valid')};
-                element.current.classList.add('is-invalid');                
-                return;
-            }else{
-                if(element.current.classList.contains('is-invalid')){element.current.classList.remove('is-invalid')};
-                element.current.classList.add('is-valid');             
-            };
+    const checkValidity = (element) => {           
+        if(element.current.value === ''){
+            if(element.current.classList.contains('is-valid')){element.current.classList.remove('is-valid')};
+            element.current.classList.add('is-invalid');                
+            return;
+        }else{
+            if(element.current.classList.contains('is-invalid')){element.current.classList.remove('is-invalid')};
+            element.current.classList.add('is-valid');             
+        };
     };
     const clearAuthorForm = ()=> {
         setFirstName('');
@@ -119,6 +124,13 @@ const AddBook = () =>{
     }    
     const handleClose = () => {setShow(false); clearAuthorForm();}
     const handleShow = () => setShow(true);
+    const findUserNameAndID = (id) => {
+        for(let i = 0; i < usersList.length; i++){
+            if (id === usersList[i]._id){
+                return usersList[i].full_name + ' (User ID: ' + usersList[i].user_id + ')';
+            }
+        }
+    }
     return(
         <div className="container">
         <h2>Add a Book</h2>
@@ -131,7 +143,12 @@ const AddBook = () =>{
                 <div className="col-xs-12 col-lg-6 mt-3">
                     <label htmlFor="ex2" className="fw-bold">Cover Image URL</label>
                     <input className="form-control" id="ex2" type="text" value={image} onChange={(e)=>setImage(e.target.value)}/>                    
-                </div>                    
+                </div>         
+                <div className="col-xs-12 col-lg-3 mt-3">
+                    <label htmlFor="ex3" className="fw-bold">Call Number</label>
+                    <input className="form-control" id="ex3" type="text" value={callNumber}
+                        onChange={e => setCallNumber(e.target.value)}/>
+                </div>                  
                 <div className="col-xs-12 col-lg-3 mt-3">
                     <label htmlFor="ex3" className="fw-bold">ISBN</label>
                     <input className="form-control" id="ex3" type="text" required value={isbn} onChange={(e)=>setISBN(e.target.value)}/>
@@ -156,8 +173,29 @@ const AddBook = () =>{
                 </div>
                 <div className="col-xs-12 col-lg-3 mt-3">
                     <label htmlFor="ex5" className="fw-bold">Pages</label>
-                    <input className="form-control" id="ex5" type="text" value={pages} onChange={(e)=>setPages(e.target.value)}/>
+                    <input className="form-control" id="ex5" type="number" value={pages} onChange={(e)=>setPages(e.target.value)}/>
                 </div>
+                <div className="col-xs-12 col-lg-3 mt-3">
+                    <label htmlFor="bookStatus" className="fw-bold">Status</label>
+                    <input className="form-control" id="bookStatus" type="text" disabled readOnly defaultValue={status}/>
+                </div>  
+                <div className="col-xs-12 col-lg-6 mt-3">
+                        <label htmlFor="ex5" className="fw-bold">Holds</label>
+                        <div className="input-group">
+                            <span className="input-group-text">{holdCount}</span>
+                            <select className="form-select" id="ex5" value={holds} readOnly>
+                        {holds && holds.map((item) => (                            
+                                <option>{findUserNameAndID(item)}</option>
+                            )
+                        )}                      
+                        </select>
+                        </div>
+                </div> 
+                <div className="col-xs-12 col-lg-12 mt-3">
+                    <label htmlFor="bookSummary" className="fw-bold">Summary</label>
+                    <textarea className="form-control" id="bookSummary" rows="3" value={summary} 
+                        onChange={e => setSummary(e.target.value)}/>
+                </div>  
                 <div className="author-select col-12 mt-3">                       
                     <label htmlFor="ex4" className="fw-bold">Author</label>
                     <div className="input-group">

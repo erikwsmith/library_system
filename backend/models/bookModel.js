@@ -13,10 +13,13 @@ const bookSchema = new Schema({
     pages: {type: Number, required: false, minlength: 1},
     binding: {type: String},
     publisher: {type: String},
-    publishDate: {type: Date},
+    publishedYear: {type: Date},
     checkedOut: {type: Boolean},
+    callNumber: {type: String},
+    summary: {type: String},
     holds: [String],
-    type: {type: String}
+    type: {type: String},
+
 }, {
     timestamps: true
 }, {

@@ -7,7 +7,7 @@ const MoviesList = () => {
     const [show, setShow] = useState(false);
     const [deletedImage, setDeletedImage] = useState('');
     const [deletedTitle, setDeletedTitle] = useState('');
-    const [deletedFormat, setDeletedFormat] = useState('');
+    const [deletedCallNumber, setDeletedCallNumber] = useState('');
     const [deletedID, setDeletedID] = useState('');
     const [deleted, setDeleted] = useState('');
 
@@ -28,11 +28,11 @@ const MoviesList = () => {
         };
         let image = parentEl.firstChild.firstChild.getAttribute("src");
         let title = parentEl.getElementsByTagName("td")[1].innerText;
-        let format = parentEl.getElementsByTagName("td")[5].innerHTML;
-        let movieID = parentEl.getElementsByTagName("td")[8].firstChild.getAttribute("href");
+        let callNum = parentEl.getElementsByTagName("td")[3].innerHTML;
+        let movieID = parentEl.getElementsByTagName("td")[9].firstChild.getAttribute("href");
         setDeletedImage(image);
         setDeletedTitle(title);
-        setDeletedFormat(format);
+        setDeletedCallNumber(callNum);
         setDeletedID(movieID);
     };
     // fetch records from backend on mount
@@ -47,7 +47,7 @@ const MoviesList = () => {
                     let runtime='';
                     let holdNum = '';
                     let releaseDate='';
-                    item.checkedOut === false ? status = 'Available': status = 'In Use';    
+                    !item.checkedOut ? status = 'Available': status = 'In Use';    
                     if(item.runtime){runtime = item.runtime.toString();}
                     if(item.holds){holdNum = item.holds.toString();}
                     if(item.releaseDate){releaseDate = item.releaseDate.toString();}                                                   
@@ -57,7 +57,8 @@ const MoviesList = () => {
                         runtime.toLowerCase().includes(searchVal.toLowerCase()) ||
                         holdNum.toLowerCase().includes(searchVal.toLowerCase()) ||
                         releaseDate.toLowerCase().includes(searchVal.toLowerCase()) ||                  
-                        status.toLowerCase().includes(searchVal.toLowerCase())
+                        status.toLowerCase().includes(searchVal.toLowerCase()) || 
+                        item.callNumber && item.callNumber.toLowerCase().includes(searchVal.toLowerCase())
                     ) {
                         return item;
                     }
@@ -68,13 +69,15 @@ const MoviesList = () => {
         fetchData();
     }, [searchVal, deleted] );
     const getStatus = (item) =>{
-        if(item.checkedOut && item.checkedOut === false && item.holds.length > 0){
+        if(!item.checkedOut && item.holds.length > 0){
             return 'On Hold'
-        }else if(item.checkedOut && item.checkedOut === true){
+        }
+        if(item.checkedOut ){
             return 'In Use'
-        }else{
+        }
+        
             return 'Available'
-        };
+        
     };
     return (
         <div className="container ">
@@ -99,11 +102,12 @@ const MoviesList = () => {
                     <tr>
                         <th>Image</th>
                         <th>Title</th>
+                        <th>Status</th>
+                        <th>Call Number</th>
                         <th>Rating</th>
                         <th>Runtime</th>
                         <th>Released</th>
-                        <th>Format</th>
-                        <th>Status</th>
+                        <th>Format</th>                        
                         <th>Holds</th>
                         <th>Edit</th>
                         <th>Delete</th>
@@ -114,11 +118,12 @@ const MoviesList = () => {
                         <tr key={item._id}>
                             <td style={{width:"10%"}}><img src={item.image} className="img-thumbnail" alt="Image Not Found"></img></td>
                             <td className="align-middle">{item.title}</td>
+                            <td className="align-middle">{getStatus(item)}</td>
+                            <td className="align-middle">{item.callNumber}</td>
                             <td className="align-middle">{item.rating}</td>
                             <td className="align-middle">{item.runtime}</td>
                             <td className="align-middle">{item.releaseDate}</td>
-                            <td className="align-middle">{item.format}</td>
-                            <td className="align-middle">{getStatus(item)}</td>
+                            <td className="align-middle">{item.format}</td>                            
                             <td className="align-middle"> {item.holds ? item.holds.length : 0}</td>
                             <td className="align-middle actionButtons">
                                 <a href={"/movies/" + item._id} className="btn btn-sm btn-primary" data-bs-toggle="tooltip" 
@@ -146,7 +151,7 @@ const MoviesList = () => {
                                 <p>Title: <span>{deletedTitle}</span></p>
                             </div>
                             <div>
-                                <p>Format: <span>{deletedFormat}</span></p>
+                                <p>Call Number: <span>{deletedCallNumber}</span></p>
                             </div>
                         </div>
                     </div>

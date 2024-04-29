@@ -8,7 +8,7 @@ const MusicList = () => {
     const [show, setShow] = useState(false);
     const [deletedImage, setDeletedImage] = useState('');
     const [deletedTitle, setDeletedTitle] = useState('');
-    const [deletedFormat, setDeletedFormat] = useState('');
+    const [deletedCallNumber, setDeletedCallNumber] = useState('');
     const [deletedID, setDeletedID] = useState('');
     const [deleted, setDeleted] = useState('');
 
@@ -32,11 +32,11 @@ const MusicList = () => {
         };
         let image = parentEl.firstChild.firstChild.getAttribute("src");
         let title = parentEl.getElementsByTagName("td")[1].innerText;
-        let format = parentEl.getElementsByTagName("td")[2].innerHTML;
+        let callNumber = parentEl.getElementsByTagName("td")[4].innerHTML;
         let musicID = parentEl.getElementsByTagName("td")[10].firstChild.getAttribute("href");
         setDeletedImage(image);
         setDeletedTitle(title);
-        setDeletedFormat(format);
+        setDeletedCallNumber(callNumber);
         setDeletedID(musicID);
     };
 
@@ -83,7 +83,8 @@ const MusicList = () => {
                         tracks.toLowerCase().includes(searchVal.toLowerCase()) ||
                         runtime.toLowerCase().includes(searchVal.toLowerCase()) ||
                         releaseDate.toLowerCase().includes(searchVal.toLowerCase()) ||
-                        status.toLowerCase().includes(searchVal.toLowerCase())
+                        status.toLowerCase().includes(searchVal.toLowerCase()) || 
+                        item.callNumber && item.callNumber.toLowerCase().includes(searchVal.toLowerCase())
                     ){
                         return item;
                     }
@@ -94,7 +95,7 @@ const MusicList = () => {
         fetchData();
     }, [searchVal, deleted] );
     const getStatus = (item) =>{
-        if(item.checkedOut && item.checkedOut === false && item.holds.length > 0){
+        if(!item.checkedOut && item.holds.length > 0){
             return 'On Hold'
         }else if(item.checkedOut && item.checkedOut === true){
             return 'In Use'
@@ -125,13 +126,13 @@ const MusicList = () => {
                     <tr>
                         <th>Image</th>
                         <th>Title</th>
-                        <th>Format</th>
+                        <th>Status</th>
                         <th>Artist</th>
+                        <th>Call Number</th>
+                        <th>Format</th>                        
                         <th>Genre</th>
-                        <th>Tracks</th>
                         <th>Runtime</th>
                         <th>Released</th>
-                        <th>Status</th>
                         <th>Holds</th>
                         <th>Edit</th>
                         <th>Delete</th>
@@ -142,17 +143,17 @@ const MusicList = () => {
                         <tr key={item._id}>
                             <td style={{width:"13%"}}><img src={item.image} className="img-thumbnail" alt="Image Not Found"></img></td>
                             <td className="align-middle">{item.title}</td>
-                            <td className="align-middle">{item.format}</td>
+                            <td className="align-middle">{getStatus(item)}</td>
                             <td className="align-middle">
                                 {item.artists && item.artists.map((record)=>{
                                     return <p>{getArtist(record)}</p>
                                 })} 
                             </td>
+                            <td className="align-middle">{item.callNumber}</td>
+                            <td className="align-middle">{item.format}</td>
                             <td className="align-middle">{item.genre}</td>
-                            <td className="align-middle">{getCount(item.tracks)}</td>
                             <td className="align-middle">{item.runtime}</td>
                             <td className="align-middle">{item.releaseDate}</td>
-                            <td className="align-middle">{getStatus(item)}</td>
                             <td className="align-middle"> {item.holds ? item.holds.length : 0}</td>
                             <td className="align-middle actionButtons">
                                 <a href={"/music/" + item._id} className="btn btn-sm btn-primary" data-bs-toggle="tooltip" 
@@ -180,7 +181,7 @@ const MusicList = () => {
                                 <p>Title: <span>{deletedTitle}</span></p>
                             </div>
                             <div>
-                                <p>Format: <span>{deletedFormat}</span></p>
+                                <p>Call Number: <span>{deletedCallNumber}</span></p>
                             </div>
                         </div>
                     </div>

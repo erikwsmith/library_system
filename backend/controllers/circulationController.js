@@ -3,7 +3,7 @@ const Circulation = require('../models/circulationModel');
 
 // retrieve all circulation records
 const getRecords = async( req, res ) => {
-    const records = await Circulation.find({}).sort({});
+    const records = await Circulation.find({}).sort({updatedAt: -1});
     res.status(200).json(records);
 };
 // retrieve a single record
@@ -27,7 +27,7 @@ const updateRecord = async( req, res ) => {
     if(!mongoose.Types.ObjectId.isValid(id)){
         return res.status(404).json({Error: 'Record does not exist.'});
     };
-    const record = await Record.findOneAndUpdate({_id: id}, {
+    const record = await Circulation.findOneAndUpdate({_id: id}, {
         ...req.body
     });
     if(!record){

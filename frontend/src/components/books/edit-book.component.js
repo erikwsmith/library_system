@@ -13,12 +13,15 @@ const EditBook = () => {
     const [title, setTitle] = useState('');    
     const [image, setImage] = useState('');
     const [isbn, setISBN] = useState(null);
+    const [callNumber, setCallNumber] = useState('');
     const [pages, setPages] = useState(null);
+    const [summary, setSummary] = useState('');
     const [classification, setClassification] = useState('');
     const [binding, setBinding] = useState('');
     const [status, setStatus] = useState('');
     const [holds, setHolds] = useState([]);
     const [holdCount, setHoldCount] = useState(0);
+    const [usersList, setUsersList] = useState([]);
     const [author, setAuthor] = useState('');
     const [authorList, setAuthorList] = useState([]);
     const [selectedAuthors, setSelectedAuthors] = useState([]);
@@ -54,6 +57,8 @@ const EditBook = () => {
                 setStatus(getStatus(book));  
                 setHolds(book.holds);                  
                 setISBN(book.isbn);
+                setCallNumber(book.callNumber);
+                setSummary(book.summary);
                 setImage(book.image);    
                 setClassification(book.classification);   
                 setCreatedAt(book.createdAt);
@@ -68,6 +73,13 @@ const EditBook = () => {
                 setAuthorList(json);
             }
         };
+        const fetchUsers = async() => {
+            const response = await fetch('http://localhost:4000/users');
+            const json = await response.json();
+            if(response.ok){
+                setUsersList(json);
+            }
+        };
         const mapAuthors = () => {
             let selectedAuthorsArr = [];
             for (let i = 0; i < authorList.length; i++){
@@ -79,10 +91,10 @@ const EditBook = () => {
             }
             setSelectedAuthors(selectedAuthorsArr);
         }
-
         fetchAuthors();
         fetchData();
-        mapAuthors();          
+        mapAuthors();    
+        fetchUsers();      
              
     }, [createdAt, full_name]);
 
@@ -140,7 +152,7 @@ const EditBook = () => {
         };
     };
     const updateBook = async() =>{
-        const book = {title, image, isbn, pages, author, binding, classification};
+        const book = {title, image, isbn, pages, author, binding, classification, callNumber, summary};
         const response = await fetch('http://localhost:4000/books/' + id, {
             method: 'PATCH',
             body: JSON.stringify(book),
@@ -167,6 +179,13 @@ const EditBook = () => {
             setFullName(event.target.value + ', ' + first_name + ' ' + middle_name);
         };
     };
+    const findUserNameAndID = (id) => {
+        for(let i = 0; i < usersList.length; i++){
+            if (id === usersList[i]._id){
+                return usersList[i].full_name + ' (User ID: ' + usersList[i].user_id + ')';
+            }
+        }
+    }
     return(
         <div className="container">
         <div className = "book-wrapper">
@@ -183,10 +202,16 @@ const EditBook = () => {
                 <div className="col-xs-12 col-lg-6 mt-3">
                     <label htmlFor="ex2" className="fw-bold">Cover Image URL</label>
                     <input className="form-control" id="ex2" type="text" defaultValue={image} onChange={e => setImage(e.target.value)}/>                    
-                </div>                    
+                </div>  
+                <div className="col-xs-12 col-lg-3 mt-3">
+                    <label htmlFor="ex3" className="fw-bold">Call Number</label>
+                    <input className="form-control" id="ex3" type="text" defaultValue={callNumber}
+                        onChange={e => setCallNumber(e.target.value)}/>
+                </div>                  
                 <div className="col-xs-12 col-lg-3 mt-3">
                     <label htmlFor="ex3" className="fw-bold">ISBN</label>
-                    <input className="form-control" id="ex3" type="text" defaultValue={isbn}/>
+                    <input className="form-control" id="ex3" type="text" defaultValue={isbn}
+                        onChange={e => setISBN(e.target.value)}/>
                 </div>
                 <div className="col-xs-12 col-lg-3 mt-3">
                     <label htmlFor="classification" className="fw-bold">Classification</label>
@@ -212,7 +237,7 @@ const EditBook = () => {
                 </div>
                 <div className="col-xs-12 col-lg-3 mt-3">
                     <label htmlFor="bookStatus" className="fw-bold">Status</label>
-                    <input className="form-control" id="bookStatus" type="text" readOnly defaultValue={status}/>
+                    <input className="form-control" id="bookStatus" type="text" disabled readOnly defaultValue={status}/>
                 </div>  
                 <div className="col-xs-12 col-lg-6 mt-3">
                         <label htmlFor="ex5" className="fw-bold">Holds</label>
@@ -220,12 +245,17 @@ const EditBook = () => {
                             <span class="input-group-text">{holdCount}</span>
                             <select className="form-select" id="ex5" value={holds} readOnly>
                         {holds && holds.map((item) => (                            
-                                <option>{item}</option>
+                                <option>{findUserNameAndID(item)}</option>
                             )
                         )}                      
                         </select>
                         </div>
-                    </div>  
+                </div> 
+                <div className="col-xs-12 col-lg-12 mt-3">
+                    <label htmlFor="bookStatus" className="fw-bold">Summary</label>
+                    <textarea className="form-control" id="bookStatus" rows="3" defaultValue={summary} 
+                        onChange={e => setSummary(e.target.value)}/>
+                </div>  
                 <div className="author-select col-12 mt-3">                       
                     <label htmlFor="ex4" className="fw-bold">Author</label>
                     <div className="input-group">

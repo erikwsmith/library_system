@@ -19,7 +19,31 @@ const CicrulationList = () => {
             const [year, month, day] = _date.split('-');
             return month + '/' + day + '/' + year;
         }
-    }         
+    }        
+    const findUserName = (userAccount)=>{
+        for(let i = 0; i < usersList.length; i++){
+            if (userAccount === usersList[i]._id){
+                return usersList[i].full_name;
+            }
+        }
+        
+    };
+    const findUserAccount = (userAccount)=>{
+        for(let i = 0; i < usersList.length; i++){
+            if (userAccount === usersList[i]._id){
+                return usersList[i].user_id;
+            }
+        }
+        
+    };
+    const findCallNumber = (id)=>{        
+        let combinedArray = books.concat(movies, music);
+        for(let i = 0; i < combinedArray.length; i++){
+            if (id === combinedArray[i]._id){
+                return combinedArray[i].callNumber;
+            }
+        }        
+    };
     useEffect(()=>{
         const fetchCirculation = async() => {
             const response = await fetch('http://localhost:4000/circulation');
@@ -83,7 +107,8 @@ const CicrulationList = () => {
         <table className="table table-hover ">
                 <thead>
                     <tr>
-                        <th>User Account</th>                        
+                        <th>User ID</th>  
+                        <th>User Name</th>                      
                         <th>Call Number</th>
                         <th>Title</th>  
                         <th>Type</th>
@@ -97,8 +122,9 @@ const CicrulationList = () => {
                 <tbody>
                     {circulation && circulation.map((item)=>(
                         <tr key={item._id}>
-                            <td className="align-middle">{item.userAccount}</td>
-                            <td className="align-middle">{item.itemID}</td>
+                            <td className="align-middle">{findUserAccount(item.userAccount)}</td>
+                            <td className="align-middle">{findUserName(item.userAccount)}</td>
+                            <td className="align-middle">{findCallNumber(item.itemID)}</td>
                             <td className="align-middle">{item.itemTitle}</td>
                             <td className="align-middle">{item.itemType}</td>                            
                             <td className="align-middle">{formatDate(item.checkoutDate)}</td>

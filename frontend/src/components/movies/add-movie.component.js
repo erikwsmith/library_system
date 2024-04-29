@@ -12,12 +12,14 @@ const AddMovie = () =>{
     const [releaseDate, setReleaseDate] = useState(null);  
     const [format, setFormat] = useState('');  
     const [status, setStatus] = useState('');
+    const [callNumber, setCallNumber] = useState('');    
+    const [summary, setSummary] = useState('');    
     const [holds, setHolds] = useState([]);
     const [holdCount, setHoldCount] = useState(0);   
 
     const handleSubmit = async(e) => {
         e.preventDefault();
-        const movie = {title, image, format, runtime, releaseDate, rating, type: 'Movie'};
+        const movie = {title, image, format, runtime, releaseDate, rating, type: 'Movie', summary, callNumber};
         const response = await fetch('http://localhost:4000/movies/add', {
             method: 'POST',
             body: JSON.stringify(movie),
@@ -64,11 +66,17 @@ const AddMovie = () =>{
                 <div className="form-group row">
                     <div className="col-xs-12 col-lg-6 mt-3">
                     <label htmlFor="ex1" className="fw-bold">Movie Title</label>
-                        <input className="form-control" id="ex1" type="text" value={title} onChange={(e)=>setTitle(e.target.value)}/>
+                        <input className="form-control" id="ex1" type="text" value={title} 
+                        required onChange={(e)=>setTitle(e.target.value)}/>
                     </div>
                     <div className="col-xs-12 col-lg-6 mt-3">
                         <label htmlFor="ex2" className="fw-bold">Cover Image URL</label>
                         <input className="form-control" id="ex2" type="text" value={image} onChange={(e)=>setImage(e.target.value)}/>                    
+                    </div>  
+                    <div className="col-xs-12 col-lg-3 mt-3">
+                        <label htmlFor="callnumber" className="fw-bold">Call Number</label>
+                        <input className="form-control" id="callNumber" type="text" value={callNumber}
+                            onChange={e => setCallNumber(e.target.value)}/>
                     </div>  
                     <div className="col-xs-12 col-lg-3 mt-3">
                         <label htmlFor="ex3" className="fw-bold">Rating</label>
@@ -90,7 +98,7 @@ const AddMovie = () =>{
                     </div>
                     <div className="col-xs-12 col-lg-3 mt-3">
                         <label htmlFor="ex6" className="fw-bold">Format</label>
-                        <select className="form-select" id="ex6" value={format} onChange={e => setFormat(e.target.value)}>
+                        <select className="form-select" id="ex6" value={format} required onChange={e => setFormat(e.target.value)}>
                             <option></option>
                             <option>Blu-Ray</option>
                             <option>DVD</option>                        
@@ -98,7 +106,7 @@ const AddMovie = () =>{
                     </div> 
                     <div className="col-xs-12 col-lg-3 mt-3">
                         <label htmlFor="bookStatus" className="fw-bold">Status</label>
-                        <input className="form-control" id="bookStatus" type="text" readOnly defaultValue={'Available'}/>
+                        <input className="form-control" id="bookStatus" type="text" disabled readOnly defaultValue={'Available'}/>
                     </div>  
                     <div className="col-xs-12 col-lg-6 mt-3">
                         <label htmlFor="ex7" className="fw-bold">Holds</label>
@@ -112,6 +120,11 @@ const AddMovie = () =>{
                         </select>
                         </div>
                     </div>  
+                    <div className="col-xs-12 col-lg-12 mt-3">
+                        <label htmlFor="movieSummary" className="fw-bold">Summary</label>
+                        <textarea className="form-control" id="movieSummary" rows="3" value={summary} 
+                            onChange={e => setSummary(e.target.value)}/>
+                    </div>      
                 </div>        
                 <br/>
                 <div className="col-12 mt-4 mx-auto text-center">

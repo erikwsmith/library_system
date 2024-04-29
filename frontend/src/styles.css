@@ -72,6 +72,7 @@ p {
 }
 .trashIcon{
     font-size: large;
+    pointer-events: none;
 }
 .book-wrapper, .music-wrapper {
     display:flex;
@@ -136,5 +137,24 @@ p {
     font-weight:400;
     font-size: large;
 }
-
+.toggleInput {
+    width:200px;    
+}
+.trackCount {
+    width: 50px;
+    display: flex;
+    justify-content: center;
+}
+#trackCountInput {
+    width: 60px;
+}
+.addTrack, .toggleButton {
+    width: 70px;
+}
+.toggleButton {
+    padding-top: 8px;
+}
+.artistSelect {
+    z-index: 3;
+}
 

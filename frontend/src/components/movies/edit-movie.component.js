@@ -18,6 +18,8 @@ const EditBook = () => {
     const [releaseDate, setReleaseDate] = useState(null);  
     const [format, setFormat] = useState('');  
     const [status, setStatus] = useState('');
+    const [callNumber, setCallNumber] = useState('');
+    const [summary, setSummary] = useState('');
     const [holds, setHolds] = useState([]);
     const [holdCount, setHoldCount] = useState(0);   
     const titleRef = useRef();
@@ -48,6 +50,8 @@ const EditBook = () => {
                 setRuntime(movie.runtime);
                 setReleaseDate(movie.releaseDate);                  
                 setCreatedAt(movie.createdAt);
+                setSummary(movie.summary);
+                setCallNumber(movie.callNumber);
                 movie.holds && movie.holds.length > 0 ? setHoldCount(movie.holds.length): setHoldCount(0);                              
             };            
         };
@@ -55,7 +59,7 @@ const EditBook = () => {
     }, [createdAt]);
 
     const updateMovie = async() =>{
-        const movie = {title, image, rating, runtime, format, releaseDate};
+        const movie = {title, image, rating, runtime, format, releaseDate, callNumber, summary};
         const response = await fetch('http://localhost:4000/movies/' + id, {
             method: 'PATCH',
             body: JSON.stringify(movie),
@@ -112,6 +116,11 @@ const EditBook = () => {
                             onChange={e => setImage(e.target.value)}/>                    
                     </div> 
                     <div className="col-xs-12 col-lg-3 mt-3">
+                        <label htmlFor="callnumber" className="fw-bold">Call Number</label>
+                        <input className="form-control" id="bookStatus" type="text" defaultValue={callNumber}
+                            onChange={e => setCallNumber(e.target.value)}/>
+                    </div>  
+                    <div className="col-xs-12 col-lg-3 mt-3">
                         <label htmlFor="ex3" className="fw-bold">Rating</label>
                         <select className="form-select" id="ex3" value={rating} onChange={e => setRating(e.target.value)}>
                             <option></option>
@@ -141,7 +150,7 @@ const EditBook = () => {
                     </div>
                     <div className="col-xs-12 col-lg-3 mt-3">
                         <label htmlFor="bookStatus" className="fw-bold">Status</label>
-                        <input className="form-control" id="bookStatus" type="text" readOnly defaultValue={status}/>
+                        <input className="form-control" id="bookStatus" type="text" disabled readOnly defaultValue={status}/>
                     </div>  
                     <div className="col-xs-12 col-lg-6 mt-3">
                         <label htmlFor="ex7" className="fw-bold">Holds</label>
@@ -154,7 +163,12 @@ const EditBook = () => {
                         )}                      
                         </select>
                         </div>
-                    </div>                      
+                    </div>    
+                    <div className="col-xs-12 col-lg-12 mt-3">
+                        <label htmlFor="movieSummary" className="fw-bold">Summary</label>
+                        <textarea className="form-control" id="movieSummary" rows="3" defaultValue={summary} 
+                            onChange={e => setSummary(e.target.value)}/>
+                    </div>                    
                 </div>
                 <br/>
                 <div className="col-12 mt-4 mx-auto text-center">

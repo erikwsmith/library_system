@@ -8,12 +8,13 @@ const musicSchema = new Schema({
     format: {type: String, required: true},
     artists: [String],
     genre: {type: String},
-    tracks: [String],
+    tracks: [Object],
     runtime: {type: Number},
     releaseDate: {type: Number},
     checkedOut: {type: Boolean},
     type: {type: String},
-    holds: [String]
+    holds: [String],
+    callNumber: {type: String}
 }, {
     timestamps: true
 }, {

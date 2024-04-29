@@ -26,7 +26,7 @@ const Checkout = () =>{
     const [showSuccessful, setShowSuccessful] = useState(false);
     const [holdsMessage, setHoldsMessage] = useState('');
     const [showHolds, setShowHolds] = useState(false);
-    const [updatedHolds, setUpdatedHolds] = useState([]);
+    let [updatedHolds, setUpdatedHolds] = useState([]);
 
     const handleCloseUserError = () => {setShowUserError(false);}
     const handleShowUserError = () => setShowUserError(true);
@@ -78,7 +78,7 @@ const Checkout = () =>{
         }          
         //check for holds by other Users
         for(let i = 0; i < totalSelected; i++){            
-            if (combinedArray[i].holds && combinedArray[i].holds[0] !== userAccount){
+            if (combinedArray[i].holds.length > 0 && combinedArray[i].holds[0] !== userAccount){
                 if(combinedArray[i].type === 'Book'){bookHolds.push(combinedArray[i])};
                 if(combinedArray[i].type === 'Movie'){movieHolds.push(combinedArray[i])};
                 if(combinedArray[i].type === 'Music'){musicHolds.push(combinedArray[i])};
@@ -121,7 +121,7 @@ const Checkout = () =>{
             if(itemType === 'Movie'){itemCollection = 'movies/'};
             if(itemType === 'Music'){itemCollection = 'music/'};            
             if(combinedArray[i].holds && combinedArray[i].holds[0] === userAccount){
-                setUpdatedHolds((combinedArray[i].holds).shift());
+                setUpdatedHolds((combinedArray[i].holds).shift())
             }else{setUpdatedHolds = combinedArray[i].holds};
             
             //add circulation record
@@ -168,8 +168,15 @@ const Checkout = () =>{
     }   
     const getUserName = (userID) => {
         for(let i = 0; i < usersList.length; i++){
-            if(usersList[i]._id == userID){                
+            if(usersList[i]._id === userID){                
                 return usersList[i].full_name;
+            }
+        }               
+    };
+    const getUserAccount = (userID) => {
+        for(let i = 0; i < usersList.length; i++){
+            if(usersList[i]._id === userID){                
+                return usersList[i].user_id;
             }
         }               
     };
@@ -247,7 +254,7 @@ const Checkout = () =>{
                             getUserCheckedItems(e.target.value, circulation).length > 4 ? handleShowOverLimitError() : console.log('')}}>
                         <option selected disabled>Choose...</option>
                         {usersList && usersList.map((item)=>{
-                            return <option>{item._id}</option>
+                            return <option value={item._id}>{getUserAccount(item._id)}</option>
                         })}
                     </select>
                     </div>
@@ -422,7 +429,7 @@ const Checkout = () =>{
                 style={{marginTop: 100}}>
                 <Modal.Body>
                     <div className="text-center fw-bold fs-4"></div> 
-                        <h4>The following items have Holds placed by other Users:</h4>                                        
+                        <h4>The following items are On Hold:</h4>                                        
                         <div className="holdsModal mt-4" dangerouslySetInnerHTML={{__html: holdsMessage}}></div>                    
                 </Modal.Body>
                 <Modal.Footer>                    

@@ -11,6 +11,7 @@ const Return = () =>{
     const [music, setMusic] = useState([]);
     const [movies, setMovies] = useState([]);    
     const [circulation, setCirculation] = useState([]);
+    
     const [selectedBooks, setSelectedBooks] = useState([]);
     const [selectedMovies, setSelectedMovies] = useState([]);
     const [selectedMusic, setSelectedMusic] = useState([]);
@@ -40,29 +41,50 @@ const Return = () =>{
         if(!totalSelected){           
             handleShowItemsError();
             return;
-        }    
-        console.log(combinedArray.length);
-        combinedArray.forEach((i)=>{
+        }            
+        combinedArray.forEach(async(i)=>{
             circulation.forEach(async(rec)=>{
                 if (rec.itemID === i._id && (!rec.returnDate || rec.returnDate === '' || rec.returnDate === null)){
-                    //update circulation record's return date            
-                    const itemRecord = {returnDate};
-                    const itemResponse = await fetch('http://localhost:4000/circulation/' + rec._id, {
-                        method: 'PATCH',
-                        body: JSON.stringify(itemRecord),
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    const itemJson = await itemResponse.json();
-                    if(!itemResponse.ok){
-                        setError(itemJson.error);
-                        return;
-                    }
+            //update circulation record's return date            
+            const itemRecord = {returnDate: returnDate};
+            const itemResponse = await fetch('http://localhost:4000/circulation/' + rec._id, {
+                method: 'PATCH',
+                body: JSON.stringify(itemRecord),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            const itemJson = await itemResponse.json();
+            if(!itemResponse.ok){
+                setError(itemJson.error);
+                return;
+            }  
                 }
             }) // end inner loop
+
+            const itemID = i._id;            
+            const itemType = i.type;
+            let itemCollection = '';
+            if(itemType === 'Book'){itemCollection = 'books/'};
+            if(itemType === 'Movie'){itemCollection = 'movies/'};
+            if(itemType === 'Music'){itemCollection = 'music/'};    
+
+            //update item's checkout status            
+            const itemRecord = {checkedOut: false};
+            const itemUpdate = await fetch('http://localhost:4000/' + itemCollection + itemID, {
+                method: 'PATCH',
+                body: JSON.stringify(itemRecord),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            const itemJson = await itemUpdate.json();
+            if(!itemUpdate.ok){
+                setError(itemJson.error);
+                return;
+            }
         }) //end outer loop 
-        //handleShowSuccessful();      
+        handleShowSuccessful();    
     }    
 
     const formatDate = (date) => {        
@@ -72,7 +94,7 @@ const Return = () =>{
     }    
 
     const findAvailableItems =(item)=>{
-        if(item.checkedOut){
+        if(item.checkedOut && (!returnDate || returnDate === '' || returnDate === undefined)){
             return item;
         };
     }
