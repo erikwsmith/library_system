@@ -25,8 +25,10 @@ import AddArtist from './components/artists/add-artist.component';
 import Checkout from './components/checkout';
 import Return from './components/return';
 import CirculationList from './components/circulation/circulation-list.component';
+import BillingList from './components/billing/billing-list_component';
+import Login from './components/login';
 
-function App() {
+function App() {  
   return (
     <BrowserRouter>
       <Navbar/>
@@ -50,6 +52,7 @@ function App() {
         <Route path='/checkout' element={<Checkout/>}/>
         <Route path='/return' element={<Return/>}/>
         <Route path='/circulation' element={<CirculationList/>} />
+        <Route path='/billing' element={<BillingList/>} />
         <Route path='/users' element={<UsersList/>} />
         <Route path='/users/add' element={<AddUser/>} />
         <Route path='/users/:id' element={<EditUser/>} />

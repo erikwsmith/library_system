@@ -9,7 +9,11 @@ const circulationSchema = new Schema({
     returnDate: {type: Date},
     itemTitle: {type: String},
     itemID: {type: String},
-    itemType: {type: String}
+    itemType: {type: String},
+    daysOverdue: {type: Number},
+    daysInUse: {type: Number},
+    dailyFee: {type: Number},
+    totalFees: {type: Number} 
 }, {
     timestamps: true
 }, {

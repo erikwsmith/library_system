@@ -13,9 +13,11 @@ const getRecord = async( req, res ) => {
 };
 // add a single record
 const addRecord = async( req, res) => {
-    const {userAccount, checkoutDate, dueDate, returnDate, itemID, itemTitle, itemType} = req.body;
-    try {
-        const record = await Circulation.create({userAccount, checkoutDate, dueDate, returnDate, itemID, itemTitle, itemType});
+    const {userAccount, checkoutDate, dueDate, returnDate, itemID, itemTitle, itemType, daysOverdue, daysInUse, 
+        dailyFee, totalFees} = req.body;
+    try {        
+        const record = await Circulation.create({userAccount, checkoutDate, dueDate, returnDate, itemID, itemTitle, 
+            itemType, daysOverdue, daysInUse, dailyFee, totalFees});
         res.status(200).json(record);
     } catch (error){
         res.status(400).json({Error: error.message})

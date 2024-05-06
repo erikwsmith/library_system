@@ -6,7 +6,7 @@ export default class Navbar extends Component {
         return (
             <nav className="navbar fixed-top navbar-dark bg-dark navbar-expand-lg p-2">
                 <div className="nav-items">
-                    <Link to="/" className="navbar-brand ">Library System</Link>
+                    <Link to="/" className="navbar-brand "><i className="fa fa-book site-icon"></i></Link>
                     <div className="collapse navbar-collapse">
                         <ul className="navbar-nav mr-auto">
                             <li className="navbar-item">
@@ -32,6 +32,9 @@ export default class Navbar extends Component {
                             </li>
                             <li className="navbar-item">
                                 <Link to="/circulation" className="nav-link">Circulation</Link>
+                            </li>
+                            <li className="navbar-item">
+                                <Link to="/billing" className="nav-link">Billing</Link>
                             </li>
                             <li className="navbar-item">
                                 <Link to="/users" className="nav-link">Users</Link>

@@ -8,6 +8,7 @@ const { getMovies, getMovie, addMovie, updateMovie, deleteMovie } = require('../
 const { getAllMusic, getMusic, addMusic, updateMusic, deleteMusic} = require('../controllers/musicController');
 const { getUsers, getUser, addUser, updateUser, deleteUser } = require('../controllers/usersController');
 const { getRecords, getRecord, addRecord, updateRecord } = require('../controllers/circulationController');
+const { getBillings, getBilling, addBilling, updateBilling } = require('../controllers/billingController');
 
 // BOOKS
 router.get('/books', getBooks); // READ all books
@@ -56,5 +57,11 @@ router.get('/circulation', getRecords); // READ all records
 router.get('/circulation/:id', getRecord); // READ a record
 router.post('/circulation/add', addRecord); // CREATE a circulation record
 router.patch('/circulation/:id', updateRecord); // UPDATE a circulation record
+
+// BILLING
+router.get('/billing', getBillings); // READ all records
+router.get('/billing/:id', getBilling); // READ a record
+router.post('/billing/add', addBilling); // CREATE a billing record
+router.patch('/billing/:id', updateBilling); // UPDATE a billing record
 
 module.exports = router;

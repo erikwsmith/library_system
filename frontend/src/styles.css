@@ -22,6 +22,9 @@ p {
     width: 100px;
     margin-right: 10px;
 }
+.login-text {
+    font-size: medium;
+}
 .homeBackground {
     background-image: url('./images/library_7.jpg');
     background-size: cover;
@@ -29,9 +32,17 @@ p {
     height: 100vh;
     width: 100vw;
 }
+.home-span {
+    font-size: 50px;
+}
+.site-icon {
+    font-size: 42px;
+    margin-left: 20px;
+}
+
 .homeBackground p {
     color: white;
-    font-size: xx-large;
+    font-size: x-large;
 }
 .input-group {
     display:flex;
@@ -39,6 +50,9 @@ p {
 }
 .input-group .multiselect .optionContainer {
     max-height: 100px;
+}
+.navbar-item {
+    font-size: large
 }
 #pageTitle {
     display:flex;
@@ -157,4 +171,52 @@ p {
 .artistSelect {
     z-index: 3;
 }
-
+.collapsible {
+    background-color: #777;
+    color: white;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px; 
+}
+.active, .collapsible:hover {
+    background-color: #555;
+  }  
+.content {
+    padding: 0 18px;
+    display: none;
+    overflow: hidden;
+}
+.billingSpan {
+    pointer-events: none;
+    display:flex;
+    align-items: center;
+    height: 50px;
+    margin-right: 55px;
+}
+.billingSpan label {
+    font-weight: bold;
+}
+.billingInput {
+    display:flex;
+    margin-left: 10px;
+}
+.billingButton{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+.billing-card {
+    display:flex;
+    width:100%;
+    pointer-events:none;
+}
+.billing-card-user {
+    display:flex;
+}
+.billing-card-balance {
+    display:flex;
+}

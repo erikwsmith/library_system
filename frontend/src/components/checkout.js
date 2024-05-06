@@ -210,6 +210,7 @@ const Checkout = () =>{
             const json = await response.json();            
             if(response.ok){
                 const availableBooks = json.filter(findAvailableItems);
+                availableBooks.forEach((i)=>{i.displayName = i.title + '  (' + i.callNumber + ')'});
                 setBooks(availableBooks);                                   
             }
         };
@@ -218,6 +219,7 @@ const Checkout = () =>{
             const json = await response.json();
             if(response.ok){
                 const availableMovies = json.filter(findAvailableItems);
+                availableMovies.forEach((i)=>{i.displayName = i.title + '  (' + i.callNumber + ')'});
                 setMovies(availableMovies);                    
             }
         };
@@ -226,6 +228,7 @@ const Checkout = () =>{
             const json = await response.json();
             if(response.ok){
                 const availableMusic = json.filter(findAvailableItems);
+                availableMusic.forEach((i)=>{i.displayName = i.title + '  (' + i.callNumber + ')'});
                 setMusic(availableMusic);                    
             }
         };
@@ -284,7 +287,7 @@ const Checkout = () =>{
                             options={
                                 books
                             }
-                            displayValue= 'title'
+                            displayValue= 'displayName'
                             avoidHighlightFirstOption={true}
                             closeIcon='cancel'
                             placeholder='Select...'                         
@@ -304,7 +307,7 @@ const Checkout = () =>{
                             options={
                                 movies
                             }
-                            displayValue= 'title'
+                            displayValue= 'displayName'
                             avoidHighlightFirstOption={true}
                             closeIcon='cancel'
                             placeholder='Select...'                         
@@ -324,7 +327,7 @@ const Checkout = () =>{
                             options={
                                 music
                             }
-                            displayValue= 'title'
+                            displayValue= 'displayName'
                             avoidHighlightFirstOption={true}
                             closeIcon='cancel'
                             placeholder='Select...'                         

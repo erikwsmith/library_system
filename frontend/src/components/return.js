@@ -2,6 +2,7 @@ import {React, useState, useEffect, useRef} from 'react';
 import Multiselect from 'multiselect-react-dropdown';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { createRoutesFromElements } from 'react-router-dom';
 const {Button, Modal} = require('react-bootstrap');
 
 const Return = () =>{ 
@@ -11,7 +12,7 @@ const Return = () =>{
     const [music, setMusic] = useState([]);
     const [movies, setMovies] = useState([]);    
     const [circulation, setCirculation] = useState([]);
-    
+    const [billing, setBilling] = useState([]);    
     const [selectedBooks, setSelectedBooks] = useState([]);
     const [selectedMovies, setSelectedMovies] = useState([]);
     const [selectedMusic, setSelectedMusic] = useState([]);
@@ -41,29 +42,45 @@ const Return = () =>{
         if(!totalSelected){           
             handleShowItemsError();
             return;
-        }            
-        combinedArray.forEach(async(i)=>{
-            circulation.forEach(async(rec)=>{
-                if (rec.itemID === i._id && (!rec.returnDate || rec.returnDate === '' || rec.returnDate === null)){
-            //update circulation record's return date            
-            const itemRecord = {returnDate: returnDate};
-            const itemResponse = await fetch('http://localhost:4000/circulation/' + rec._id, {
-                method: 'PATCH',
-                body: JSON.stringify(itemRecord),
-                headers: {
-                    'Content-Type': 'application/json'
+        }     
+        let newBillingArr = [];       
+        for(let i=0; i < combinedArray.length; i++){            
+            for(let rec = 0; rec < circulation.length; rec++){                
+                let daysPastDue = 0;
+                let fees = 0.00;
+                if (circulation[rec].itemID === combinedArray[i]._id && (!circulation[rec].returnDate || 
+                        circulation[rec].returnDate === '' || circulation[rec].returnDate === null)){
+                    if(new Date(returnDate) > new Date(circulation[rec].dueDate)){
+                        daysPastDue = (new Date(returnDate) - new Date(circulation[rec].dueDate)) / (1000*60*60*24);
+                        fees = Math.trunc(daysPastDue) * 0.10; 
+                    }
+                    //update circulation record's return date, days overdue, and fees            
+                    const itemRecord = {returnDate: new Date(returnDate), daysOverdue: daysPastDue, totalFees: fees};
+                    const itemResponse = await fetch('http://localhost:4000/circulation/' + circulation[rec]._id, {
+                        method: 'PATCH',
+                        body: JSON.stringify(itemRecord),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    const itemJson = await itemResponse.json();
+                    if(!itemResponse.ok){
+                        setError(itemJson.error);
+                        return;
+                    } 
+                    const newObj = {circID: circulation[rec]._id, userAccount: circulation[rec].userAccount, 
+                                    checkoutDate: circulation[rec].checkoutDate, dueDate: circulation[rec].dueDate, 
+                                    itemTitle: circulation[rec].itemTitle, itemID: circulation[rec].itemID, 
+                                    itemType: circulation[rec].itemType, daysOverdue: daysPastDue, returnDate: new Date(returnDate),
+                                    totalFees: fees, payStatus: 'Not Paid'};                    
+                    if(fees > 0){
+                        newBillingArr.push(newObj); 
+                    };
                 }
-            })
-            const itemJson = await itemResponse.json();
-            if(!itemResponse.ok){
-                setError(itemJson.error);
-                return;
-            }  
-                }
-            }) // end inner loop
+            } // end inner loop
 
-            const itemID = i._id;            
-            const itemType = i.type;
+            const itemID = combinedArray[i]._id;            
+            const itemType = combinedArray[i].type;
             let itemCollection = '';
             if(itemType === 'Book'){itemCollection = 'books/'};
             if(itemType === 'Movie'){itemCollection = 'movies/'};
@@ -83,28 +100,68 @@ const Return = () =>{
                 setError(itemJson.error);
                 return;
             }
-        }) //end outer loop 
+        } //end outer loop    
+        for(let n = 0; n < newBillingArr.length; n++){
+            let index = billing.findIndex(item => item.userAccount === newBillingArr[n].userAccount);
+            if(index === undefined || index === -1 || billing.length === 0 || !billing){
+                let newObj = {userAccount: newBillingArr[n].userAccount, balance: newBillingArr[n].totalFees, circRecords: [newBillingArr[n]]};                  
+                billing.push(newObj);
+                //POST
+                const billingPost = await fetch('http://localhost:4000/billing/add', {
+                    method: 'POST',
+                    body: JSON.stringify(newObj),
+                    headers: {'Content-Type': 'application/json'}
+                })
+                const json = await billingPost.json();
+                if(!billingPost.ok){
+                    setError(json.error);
+                    return;
+                }
+                if(billingPost.ok){            
+                    console.log("it worked!");                                    
+                }
+            }else{
+                billing[index].circRecords.push(newBillingArr[n]);                
+                //PATCH
+                let oldBalance = billing[index].balance;
+                let updatedObj = {balance: newBillingArr[n].totalFees + oldBalance, 
+                    circRecords: billing[index].circRecords};
+                const billingUpdate = await fetch('http://localhost:4000/billing/' + billing[index]._id, {
+                    method: 'PATCH',
+                    body: JSON.stringify(updatedObj),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                const billingJson = await billingUpdate.json();
+                if(!billingUpdate.ok){
+                    setError(billingJson.error);                                    
+                }
+                if(billingUpdate.ok){                    
+                    console.log('Updated!: ', billingJson);                                    
+                }     
+            }
+        };    
         handleShowSuccessful();    
-    }    
 
+    }    
     const formatDate = (date) => {        
         let dateString = '';
         dateString = date.getFullYear() + '-' + ('0' + (1 + date.getMonth())).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
         return dateString;
     }    
-
     const findAvailableItems =(item)=>{
         if(item.checkedOut && (!returnDate || returnDate === '' || returnDate === undefined)){
             return item;
         };
     }
-
     useEffect(()=>{              
         const fetchBooks = async() => {
             const response = await fetch('http://localhost:4000/books');
             const json = await response.json();            
             if(response.ok){
                 const availableBooks = json.filter(findAvailableItems);
+                availableBooks.forEach((i)=>{i.displayName = i.title + '  (' + i.callNumber + ')'});
                 setBooks(availableBooks);                                   
             }
         };
@@ -113,6 +170,7 @@ const Return = () =>{
             const json = await response.json();
             if(response.ok){
                 const availableMovies = json.filter(findAvailableItems);
+                availableMovies.forEach((i)=>{i.displayName = i.title + '  (' + i.callNumber + ')'});
                 setMovies(availableMovies);                    
             }
         };
@@ -121,6 +179,7 @@ const Return = () =>{
             const json = await response.json();
             if(response.ok){
                 const availableMusic = json.filter(findAvailableItems);
+                availableMusic.forEach((i)=>{i.displayName = i.title + '  (' + i.callNumber + ')'});
                 setMusic(availableMusic);                    
             }
         };
@@ -131,10 +190,18 @@ const Return = () =>{
                 setCirculation(json);                    
             }
         };
+        const fetchBilling = async() => {
+            const response = await fetch('http://localhost:4000/billing');
+            const json = await response.json();
+            if(response.ok){                
+                setBilling(json);                    
+            }
+        };
         fetchBooks();
         fetchMovies();
         fetchMusic();
         fetchCirculation();
+        fetchBilling();
         let today = new Date();    
         setReturnDate((getReturnDate(today)).toString());   
     }, []);
@@ -162,7 +229,7 @@ const Return = () =>{
                             options={
                                 books
                             }
-                            displayValue= 'title'
+                            displayValue= 'displayName'
                             avoidHighlightFirstOption={true}
                             closeIcon='cancel'
                             placeholder='Select...'                         
@@ -182,7 +249,7 @@ const Return = () =>{
                             options={
                                 movies
                             }
-                            displayValue= 'title'
+                            displayValue= 'displayName'
                             avoidHighlightFirstOption={true}
                             closeIcon='cancel'
                             placeholder='Select...'                         
@@ -202,7 +269,7 @@ const Return = () =>{
                             options={
                                 music
                             }
-                            displayValue= 'title'
+                            displayValue= 'displayName'
                             avoidHighlightFirstOption={true}
                             closeIcon='cancel'
                             placeholder='Select...'                         
