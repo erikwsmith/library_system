@@ -87,16 +87,21 @@ const BillingList = () => {
         const fetchBilling = async() => {
             const response = await fetch('http://localhost:4000/billing');
             const json = await response.json();
-            /*if(response.ok){
-                //const filterResults = json.filter((item)=> {
-                    if (item.userAccount && (findUserAccount(item.userAccount)).toString().toLowerCase().includes(searchVal.toLowerCase()) ||
-                        (item.userAccount && getUserName(item.userAccount)).toLowerCase().includes(searchVal.toLowerCase())
+            if(response.ok){                
+                const filterResults = json.filter((item)=> {
+                    let user_account = findUserAccount(item.userAccount);
+                    if(user_account === undefined){user_account = ''};
+                    let user_name = getUserName(item.userAccount);
+                    if(user_name === undefined){user_name = ''};
+                    if (item.userAccount && user_account !== undefined && user_account.toString().toLowerCase().includes(searchVal.toLowerCase()) ||
+                        item.userAccount && user_name !== undefined  && user_name.toLowerCase().includes(searchVal.toLowerCase())
                     ) {
                         return item;
                     }
-                });*/
-                setBillingList(json);
-            
+            })
+            setBillingList(filterResults);            
+
+        }
         };
         const fetchBooks = async() => {
             const response = await fetch('http://localhost:4000/books');
