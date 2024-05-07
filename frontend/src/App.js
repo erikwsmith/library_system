@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './styles.css';
 
-import Navbar from './components/navbar.component';
+import Nav_Bar from './components/navbar.component';
 import Home from './components/home.component';
 import BooksList from './components/books/books-list.component';
 import EditBook from './components/books/edit-book.component';
@@ -26,12 +26,11 @@ import Checkout from './components/checkout';
 import Return from './components/return';
 import CirculationList from './components/circulation/circulation-list.component';
 import BillingList from './components/billing/billing-list_component';
-import Login from './components/login';
 
 function App() {  
   return (
     <BrowserRouter>
-      <Navbar/>
+      <Nav_Bar/>
       <Routes>
         <Route path='/' exact element={<Home/>} />
         <Route path='/books' exact element={<BooksList/>} />

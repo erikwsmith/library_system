@@ -51,8 +51,8 @@ const EditArtist = () => {
     };
     const updateArtist = async() =>{        
         const artist = {group_name, first_name, middle_name, last_name, full_name, biography};
-        const response = await fetch('http://localhost:4000/artists/' + id, {
-        //const response = await fetch('https://library-system-rydv.onrender.com/artists/' + id, {
+        //const response = await fetch('http://localhost:4000/artists/' + id, {
+        const response = await fetch('https://library-system-rydv.onrender.com/artists/' + id, {
             method: 'PATCH',
             body: JSON.stringify(artist),
             headers: {
@@ -70,8 +70,8 @@ const EditArtist = () => {
     useEffect( ()=>{
         const fetchData = async()=>{          
             //get artist
-            const artistQuery = await fetch('http://localhost:4000/artists/' + id);
-            //const artistQuery = await fetch('https://library-system-rydv.onrender.com/artists/' + id);
+            //const artistQuery = await fetch('http://localhost:4000/artists/' + id);
+            const artistQuery = await fetch('https://library-system-rydv.onrender.com/artists/' + id);
             let artistJson = await artistQuery.json();
             if(artistQuery.ok) {                 
                 setArtist(artistJson);

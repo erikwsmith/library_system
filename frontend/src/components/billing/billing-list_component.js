@@ -99,9 +99,8 @@ const BillingList = () => {
                         return item;
                     }
             })
-            setBillingList(filterResults);            
-
-        }
+            setBillingList(filterResults);         
+            }   
         };
         const fetchBooks = async() => {
             const response = await fetch('http://localhost:4000/books');

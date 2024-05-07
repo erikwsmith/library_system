@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
-export default class Navbar extends Component {
-    render() {
+const Nav_Bar = () =>{      
         return (
-            <nav className="navbar fixed-top navbar-dark bg-dark navbar-expand-lg p-2">
+            <nav className="navbar fixed-top navbar-dark bg-dark navbar-expand-md p-2">
                 <div className="nav-items">
                     <Link to="/" className="navbar-brand "><i className="fa fa-book site-icon"></i></Link>
                     <div className="collapse navbar-collapse">
@@ -45,4 +48,5 @@ export default class Navbar extends Component {
             </nav>
         );
     };
-};
+
+export default Nav_Bar;

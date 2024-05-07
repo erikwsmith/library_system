@@ -27,8 +27,8 @@ const AddArtist = () =>{
     const handleSubmit = async(e) => {
         e.preventDefault();
         const artist = {group_name, full_name, biography};
-        const response = await fetch('http://localhost:4000/artists/add', {
-        //const response = await fetch('https://library-system-rydv.onrender.com/artists/add', {
+        //const response = await fetch('http://localhost:4000/artists/add', {
+        const response = await fetch('https://library-system-rydv.onrender.com/artists/add', {
 
             method: 'POST',
             body: JSON.stringify(artist),

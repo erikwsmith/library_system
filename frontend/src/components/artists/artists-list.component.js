@@ -9,12 +9,13 @@ const ArtistsList = () => {
         const [deleted, setDeleted] = useState('');
         const [show, setShow] = useState(false);
 
-        const goToAddArtist = () => {window.location='/artists/add'};
+        const goToAddArtist = () => {window.location='https://library-system-rydv.onrender.com/artists/add'};
 
         const handleClose = () => {setShow(false);}
         const handleShow = () => setShow(true);
         const deleteArtist = async() => {
-            const idString = 'http://localhost:4000'+ deletedID;
+            //const idString = 'http://localhost:4000'+ deletedID;
+            const idString = 'https://library-system-rydv.onrender.com'+ deletedID;
             await fetch(idString, {
                 method: 'DELETE'            
             }).then(setDeleted(deletedID)).then(handleClose);
@@ -40,8 +41,8 @@ const ArtistsList = () => {
         useEffect( ()=>{
             const fetchData = async()=>{
                 //get all authors
-                const artistQuery = await fetch('http://localhost:4000/artists');
-                //const artistQuery = await fetch('https://library-system-rydv.onrender.com/artists');
+                //const artistQuery = await fetch('http://localhost:4000/artists');
+                const artistQuery = await fetch('https://library-system-rydv.onrender.com/artists');
                 const artistJson = await artistQuery.json();  
                 if(artistQuery.ok) { 
                     const filterResults = artistJson.filter((item)=> {                           
@@ -89,7 +90,7 @@ const ArtistsList = () => {
                         <td className="align-middle authorData">{item.full_name}</td>                      
                         <td className="align-middle biography">{abbreviatedBio(item.biography)}</td>
                         <td className="align-middle">
-                                <a href={"/artists/" + item._id} className="btn btn-sm btn-primary">
+                                <a href={"https://library-system-rydv.onrender.com/artists/" + item._id} className="btn btn-sm btn-primary">
                                     <i className="fa fa-pencil editIcon"></i>
                                 </a>
                         </td>
