@@ -40,8 +40,8 @@ const ArtistsList = () => {
         useEffect( ()=>{
             const fetchData = async()=>{
                 //get all authors
-                //const artistQuery = await fetch('http://localhost:4000/artists');
-                const artistQuery = await fetch('https://library-system-rydv.onrender.com/artists');
+                const artistQuery = await fetch('http://localhost:4000/artists');
+                //const artistQuery = await fetch('https://library-system-rydv.onrender.com/artists');
                 const artistJson = await artistQuery.json();  
                 if(artistQuery.ok) { 
                     const filterResults = artistJson.filter((item)=> {                           
