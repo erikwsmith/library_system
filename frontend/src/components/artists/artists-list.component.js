@@ -9,7 +9,7 @@ const ArtistsList = () => {
         const [deleted, setDeleted] = useState('');
         const [show, setShow] = useState(false);
 
-        const goToAddArtist = () => {window.location='/artists/add'};
+        const goToAddArtist = () => {window.location='https://library-sytem-erik-smith.onrender.com/artists/add'};
 
         const handleClose = () => {setShow(false);}
         const handleShow = () => setShow(true);
@@ -90,7 +90,7 @@ const ArtistsList = () => {
                         <td className="align-middle authorData">{item.full_name}</td>                      
                         <td className="align-middle biography">{abbreviatedBio(item.biography)}</td>
                         <td className="align-middle">
-                                <a href={"/artists/" + item._id} className="btn btn-sm btn-primary">
+                                <a href={"https://library-sytem-erik-smith.onrender.com/artists/" + item._id} className="btn btn-sm btn-primary">
                                     <i className="fa fa-pencil editIcon"></i>
                                 </a>
                         </td>
