@@ -56,7 +56,8 @@ const Return = () =>{
                     }
                     //update circulation record's return date, days overdue, and fees            
                     const itemRecord = {returnDate: new Date(returnDate), daysOverdue: daysPastDue, totalFees: fees};
-                    const itemResponse = await fetch('http://localhost:4000/circulation/' + circulation[rec]._id, {
+                    //const itemResponse = await fetch('http://localhost:4000/circulation/' + circulation[rec]._id, {
+                    const itemResponse = await fetch('https://library-system-rydv.onrender.com/circulation/' + circulation[rec]._id, {
                         method: 'PATCH',
                         body: JSON.stringify(itemRecord),
                         headers: {
@@ -88,7 +89,8 @@ const Return = () =>{
 
             //update item's checkout status            
             const itemRecord = {checkedOut: false};
-            const itemUpdate = await fetch('http://localhost:4000/' + itemCollection + itemID, {
+            //const itemUpdate = await fetch('http://localhost:4000/' + itemCollection + itemID, {
+            const itemUpdate = await fetch('https://library-system-rydv.onrender.com/' + itemCollection + itemID, {
                 method: 'PATCH',
                 body: JSON.stringify(itemRecord),
                 headers: {
@@ -107,7 +109,8 @@ const Return = () =>{
                 let newObj = {userAccount: newBillingArr[n].userAccount, balance: newBillingArr[n].totalFees, circRecords: [newBillingArr[n]]};                  
                 billing.push(newObj);
                 //POST
-                const billingPost = await fetch('http://localhost:4000/billing/add', {
+                //const billingPost = await fetch('http://localhost:4000/billing/add', {
+                const billingPost = await fetch('https://library-system-rydv.onrender.com/billing/add', {
                     method: 'POST',
                     body: JSON.stringify(newObj),
                     headers: {'Content-Type': 'application/json'}
@@ -126,7 +129,8 @@ const Return = () =>{
                 let oldBalance = billing[index].balance;
                 let updatedObj = {balance: newBillingArr[n].totalFees + oldBalance, 
                     circRecords: billing[index].circRecords};
-                const billingUpdate = await fetch('http://localhost:4000/billing/' + billing[index]._id, {
+                //const billingUpdate = await fetch('http://localhost:4000/billing/' + billing[index]._id, {
+                const billingUpdate = await fetch('https://library-system-rydv.onrender.com/billing/' + billing[index]._id, {
                     method: 'PATCH',
                     body: JSON.stringify(updatedObj),
                     headers: {
@@ -157,7 +161,8 @@ const Return = () =>{
     }
     useEffect(()=>{              
         const fetchBooks = async() => {
-            const response = await fetch('http://localhost:4000/books');
+            //const response = await fetch('http://localhost:4000/books');
+            const response = await fetch('https://library-system-rydv.onrender.com/books');
             const json = await response.json();            
             if(response.ok){
                 const availableBooks = json.filter(findAvailableItems);
@@ -166,7 +171,8 @@ const Return = () =>{
             }
         };
         const fetchMovies = async() => {
-            const response = await fetch('http://localhost:4000/movies');
+            //const response = await fetch('http://localhost:4000/movies');
+            const response = await fetch('https://library-system-rydv.onrender.com/movies');
             const json = await response.json();
             if(response.ok){
                 const availableMovies = json.filter(findAvailableItems);
@@ -175,7 +181,8 @@ const Return = () =>{
             }
         };
         const fetchMusic = async() => {
-            const response = await fetch('http://localhost:4000/music');
+            //const response = await fetch('http://localhost:4000/music');
+            const response = await fetch('https://library-system-rydv.onrender.com/music');
             const json = await response.json();
             if(response.ok){
                 const availableMusic = json.filter(findAvailableItems);
@@ -184,14 +191,16 @@ const Return = () =>{
             }
         };
         const fetchCirculation = async() => {
-            const response = await fetch('http://localhost:4000/circulation');
+            //const response = await fetch('http://localhost:4000/circulation');
+            const response = await fetch('https://library-system-rydv.onrender.com/circulation');
             const json = await response.json();
             if(response.ok){                
                 setCirculation(json);                    
             }
         };
         const fetchBilling = async() => {
-            const response = await fetch('http://localhost:4000/billing');
+            //const response = await fetch('http://localhost:4000/billing');
+            const response = await fetch('https://library-system-rydv.onrender.com/billing');
             const json = await response.json();
             if(response.ok){                
                 setBilling(json);                    

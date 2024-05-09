@@ -126,7 +126,8 @@ const Checkout = () =>{
             
             //add circulation record
             const circulationRecord = {userAccount, checkoutDate, dueDate, itemType, itemID, itemTitle};       
-            const circulationResponse = await fetch('http://localhost:4000/circulation/add', {
+            //const circulationResponse = await fetch('http://localhost:4000/circulation/add', {
+            const circulationResponse = await fetch('https://library-system-rydv.onrender.com/circulation/add', {
                 method: 'POST',
                 body: JSON.stringify(circulationRecord),
                 headers: {
@@ -140,7 +141,8 @@ const Checkout = () =>{
             }  
             //update item's checkout and holds status            
             const itemRecord = {holds: updatedHolds, checkedOut: true};
-            const itemResponse = await fetch('http://localhost:4000/' + itemCollection + itemID, {
+            //const itemResponse = await fetch('http://localhost:4000/' + itemCollection + itemID, {
+            const itemResponse = await fetch('https://library-system-rydv.onrender.com/' + itemCollection + itemID, {
                 method: 'PATCH',
                 body: JSON.stringify(itemRecord),
                 headers: {
@@ -196,7 +198,8 @@ const Checkout = () =>{
     }
     useEffect(()=>{
         const fetchUsers = async() => {
-            const response = await fetch('http://localhost:4000/users');
+            //const response = await fetch('http://localhost:4000/users');
+            const response = await fetch('https://library-system-rydv.onrender.com/users');
             const json = await response.json();
             if(response.ok){
                 setUsersList(json);
@@ -206,7 +209,8 @@ const Checkout = () =>{
             }
         };        
         const fetchBooks = async() => {
-            const response = await fetch('http://localhost:4000/books');
+            //const response = await fetch('http://localhost:4000/books');
+            const response = await fetch('https://library-system-rydv.onrender.com/books');
             const json = await response.json();            
             if(response.ok){
                 const availableBooks = json.filter(findAvailableItems);
@@ -215,7 +219,8 @@ const Checkout = () =>{
             }
         };
         const fetchMovies = async() => {
-            const response = await fetch('http://localhost:4000/movies');
+            //const response = await fetch('http://localhost:4000/movies');
+            const response = await fetch('https://library-system-rydv.onrender.com/movies');
             const json = await response.json();
             if(response.ok){
                 const availableMovies = json.filter(findAvailableItems);
@@ -224,7 +229,8 @@ const Checkout = () =>{
             }
         };
         const fetchMusic = async() => {
-            const response = await fetch('http://localhost:4000/music');
+            //const response = await fetch('http://localhost:4000/music');
+            const response = await fetch('https://library-system-rydv.onrender.com/music');
             const json = await response.json();
             if(response.ok){
                 const availableMusic = json.filter(findAvailableItems);
@@ -233,7 +239,8 @@ const Checkout = () =>{
             }
         };
         const fetchCirculation = async() => {
-            const response = await fetch('http://localhost:4000/circulation');
+            //const response = await fetch('http://localhost:4000/circulation');
+            const response = await fetch('https://library-system-rydv.onrender.com/circulation');
             const json = await response.json();
             if(response.ok){                
                 setCirculation(json);                    

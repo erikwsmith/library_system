@@ -30,7 +30,8 @@ const AddBook = () =>{
 
     useEffect(()=>{
         const fetchAuthors = async() => {
-            const response = await fetch('http://localhost:4000/authors');
+            //const response = await fetch('http://localhost:4000/authors');
+            const response = await fetch('https://library-system-rydv.onrender.com/authors');
             const json = await response.json();
             if(response.ok){
                 setAuthorList(json);
@@ -42,7 +43,8 @@ const AddBook = () =>{
     const handleSubmit = async(e) => {
         e.preventDefault();
         const book = {title, image, isbn, author, pages, classification, binding, type: 'Book', callNumber, summary};
-        const response = await fetch('http://localhost:4000/books/add', {
+        //const response = await fetch('http://localhost:4000/books/add', {
+        const response = await fetch('https://library-system-rydv.onrender.com/books/add', {
             method: 'POST',
             body: JSON.stringify(book),
             headers: {
@@ -103,7 +105,8 @@ const AddBook = () =>{
         checkValidity(firstNameRef);
         
         const author = {first_name, last_name, middle_name, full_name, biography};
-        const response = await fetch('http://localhost:4000/authors/add', {
+        //const response = await fetch('http://localhost:4000/authors/add', {
+        const response = await fetch('https://library-system-rydv.onrender.com/authors/add', {
             method: 'POST',
             body: JSON.stringify(author),
             headers: {

@@ -74,7 +74,8 @@ const EditMusic = () => {
     };
     const updateMusic = async() =>{           
         const music = {title, image, format, runtime, genre, releaseDate, artists, callNumber, tracks};
-        const response = await fetch('http://localhost:4000/music/' + id, {
+        //const response = await fetch('http://localhost:4000/music/' + id, {
+        const response = await fetch('https://library-system-rydv.onrender.com/music/' + id, {
             method: 'PATCH',
             body: JSON.stringify(music),
             headers: {
@@ -98,7 +99,8 @@ const EditMusic = () => {
             return;
         }             
         const artist = {group_name, last_name, full_name, first_name, middle_name, biography};        
-            const response = await fetch('http://localhost:4000/artists/add', {
+            //const response = await fetch('http://localhost:4000/artists/add', {
+            const response = await fetch('https://library-system-rydv.onrender.com/artists/add', {
                 method: 'POST',
                 body: JSON.stringify(artist),
                 headers: {
@@ -144,7 +146,8 @@ const EditMusic = () => {
     useEffect( ()=>{
         const fetchData = async()=>{          
             //get all movies
-            const musicQuery = await fetch('http://localhost:4000/music/' + id);
+            //const musicQuery = await fetch('http://localhost:4000/music/' + id);
+            const musicQuery = await fetch('https://library-system-rydv.onrender.com/music/' + id);
             let musicJson = await musicQuery.json();
             if(musicQuery.ok) {                 
                 setMusic(musicJson);
@@ -166,7 +169,8 @@ const EditMusic = () => {
             };            
         };       
         const fetchArtists = async() => {
-            const response = await fetch('http://localhost:4000/artists');
+            //const response = await fetch('http://localhost:4000/artists');
+            const response = await fetch('https://library-system-rydv.onrender.com/artists');
             const json = await response.json();
             if(response.ok){
                 setArtistsList(json);

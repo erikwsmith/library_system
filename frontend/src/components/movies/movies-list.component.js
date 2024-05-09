@@ -15,7 +15,8 @@ const MoviesList = () => {
     const handleClose = () => {setShow(false);}
     const handleShow = () => setShow(true);
     const deleteMovie = async() => {
-        const idString = 'http://localhost:4000'+ deletedID;
+        //const idString = 'http://localhost:4000'+ deletedID;
+        const idString = 'https://library-system-rydv.onrender.com'+ deletedID;
         await fetch(idString, {
             method: 'DELETE'            
         }).then(setDeleted(deletedID)).then(handleClose);
@@ -39,7 +40,8 @@ const MoviesList = () => {
     useEffect( ()=>{
         const fetchData = async()=>{          
             //get all movies
-            const movieQuery = await fetch('http://localhost:4000/movies');
+            //const movieQuery = await fetch('http://localhost:4000/movies');
+            const movieQuery = await fetch('https://library-system-rydv.onrender.com/movies');
             let movieJson = await movieQuery.json();
             if(movieQuery.ok) {          
                 const filterResults = movieJson.filter((item)=> {          

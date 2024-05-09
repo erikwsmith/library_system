@@ -29,7 +29,8 @@ const AddAuthor = () =>{
         checkValidity(firstNameRef);
 
         const author = {last_name, first_name, middle_name, full_name, biography};
-        const response = await fetch('http://localhost:4000/authors/add', {
+        //const response = await fetch('http://localhost:4000/authors/add', {
+        const response = await fetch('https://library-system-rydv.onrender.com/authors/add', {
             method: 'POST',
             body: JSON.stringify(author),
             headers: {

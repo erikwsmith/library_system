@@ -20,7 +20,8 @@ const AddMovie = () =>{
     const handleSubmit = async(e) => {
         e.preventDefault();
         const movie = {title, image, format, runtime, releaseDate, rating, type: 'Movie', summary, callNumber};
-        const response = await fetch('http://localhost:4000/movies/add', {
+        //const response = await fetch('http://localhost:4000/movies/add', {
+        const response = await fetch('https://library-system-rydv.onrender.com/movies/add', {
             method: 'POST',
             body: JSON.stringify(movie),
             headers: {

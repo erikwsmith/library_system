@@ -47,7 +47,8 @@ const EditBook = () => {
     useEffect( ()=>{
         const fetchData = async()=>{          
             //get all books
-            const bookQuery = await fetch('http://localhost:4000/books/' + id);
+            //const bookQuery = await fetch('http://localhost:4000/books/' + id);
+            const bookQuery = await fetch('https://library-system-rydv.onrender.com/books/' + id);
             let bookJson = await bookQuery.json();
             if(bookQuery.ok) {                 
                 setBook(bookJson);
@@ -67,14 +68,16 @@ const EditBook = () => {
             };            
         };
         const fetchAuthors = async() => {
-            const response = await fetch('http://localhost:4000/authors');
+            //const response = await fetch('http://localhost:4000/authors');
+            const response = await fetch('https://library-system-rydv.onrender.com/authors');
             const json = await response.json();
             if(response.ok){
                 setAuthorList(json);
             }
         };
         const fetchUsers = async() => {
-            const response = await fetch('http://localhost:4000/users');
+            //const response = await fetch('http://localhost:4000/users');
+            const response = await fetch('https://library-system-rydv.onrender.com/users');
             const json = await response.json();
             if(response.ok){
                 setUsersList(json);
@@ -118,7 +121,8 @@ const EditBook = () => {
         checkValidity(firstNameRef);
         
         const author = {first_name, last_name, middle_name, full_name, biography};
-        const response = await fetch('http://localhost:4000/authors/add', {
+        //const response = await fetch('http://localhost:4000/authors/add', {
+        const response = await fetch('https://library-system-rydv.onrender.com/authors/add', {
             method: 'POST',
             body: JSON.stringify(author),
             headers: {
@@ -153,7 +157,8 @@ const EditBook = () => {
     };
     const updateBook = async() =>{
         const book = {title, image, isbn, pages, author, binding, classification, callNumber, summary};
-        const response = await fetch('http://localhost:4000/books/' + id, {
+        //const response = await fetch('http://localhost:4000/books/' + id, {
+        const response = await fetch('https://library-system-rydv.onrender.com/books/' + id, {
             method: 'PATCH',
             body: JSON.stringify(book),
             headers: {

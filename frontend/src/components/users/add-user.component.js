@@ -36,7 +36,8 @@ const AddUser = () =>{
         //checkValidity(firstNameRef);
 
         const user = {last_name, first_name, middle_name, full_name, user_type, user_id, birthdate, username, password};
-        const response = await fetch('http://localhost:4000/users/add', {
+        //const response = await fetch('http://localhost:4000/users/add', {
+        const response = await fetch('https://library-system-rydv.onrender.com/users/add', {
             method: 'POST',
             body: JSON.stringify(user),
             headers: {

@@ -50,7 +50,8 @@ const EditUser = () => {
     };
     const updateUser = async() =>{        
         const user = {last_name, first_name, middle_name, full_name, user_id, user_type, username, password, birthdate};
-        const response = await fetch('http://localhost:4000/users/' + id, {
+        //const response = await fetch('http://localhost:4000/users/' + id, {
+        const response = await fetch('https://library-system-rydv.onrender.com/users/' + id, {
             method: 'PATCH',
             body: JSON.stringify(user),
             headers: {
@@ -69,7 +70,8 @@ const EditUser = () => {
     useEffect( ()=>{
         const fetchData = async()=>{          
             //get user
-            const userQuery = await fetch('http://localhost:4000/users/' + id);
+            //const userQuery = await fetch('http://localhost:4000/users/' + id);
+            const userQuery = await fetch('https://library-system-rydv.onrender.com/users/' + id);
             let userJson = await userQuery.json();
             if(userQuery.ok) {                 
                 setUser(userJson);

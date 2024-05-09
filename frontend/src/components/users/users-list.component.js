@@ -33,7 +33,8 @@ const UsersList = () => {
         return newDate.toLocaleDateString('en-US', {timeZone: 'utc'});
     };
     const deleteUser = async() => {
-        const idString = 'http://localhost:4000'+ deletedID;
+        //const idString = 'http://localhost:4000'+ deletedID;
+        const idString = 'https://library-system-rydv.onrender.com'+ deletedID;
         await fetch(idString, {
             method: 'DELETE'            
         }).then(setDeletedID(deletedID)).then(handleClose);        
@@ -42,7 +43,8 @@ const UsersList = () => {
     useEffect( ()=>{
         const fetchData = async()=>{
             //get all users
-            const userQuery = await fetch('http://localhost:4000/users');
+            //const userQuery = await fetch('http://localhost:4000/users');
+            const userQuery = await fetch('https://library-system-rydv.onrender.com/users');
             const userJson = await userQuery.json();  
             if(userQuery.ok) { 
                 const filterResults = userJson.filter((item)=> {                           

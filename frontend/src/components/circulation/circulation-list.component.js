@@ -46,7 +46,8 @@ const CicrulationList = () => {
     };
     useEffect(()=>{
         const fetchCirculation = async() => {
-            const response = await fetch('http://localhost:4000/circulation');
+            //const response = await fetch('http://localhost:4000/circulation');
+            const response = await fetch('https://library-system-rydv.onrender.com/circulation');
             const json = await response.json();
             if(response.ok){
                 const filterResults = json.filter((item)=> {
@@ -67,28 +68,32 @@ const CicrulationList = () => {
             }
         };      
         const fetchUsers = async() => {
-            const response = await fetch('http://localhost:4000/users');
+            //const response = await fetch('http://localhost:4000/users');
+            const response = await fetch('https://library-system-rydv.onrender.com/users');
             const json = await response.json();
             if(response.ok){
                 setUsersList(json);                    
             }
         };        
         const fetchBooks = async() => {
-            const response = await fetch('http://localhost:4000/books');
+            //const response = await fetch('http://localhost:4000/books');
+            const response = await fetch('https://library-system-rydv.onrender.com/books');
             const json = await response.json();
             if(response.ok){
                 setBooks(json);                    
             }
         };
         const fetchMovies = async() => {
-            const response = await fetch('http://localhost:4000/movies');
+            //const response = await fetch('http://localhost:4000/movies');
+            const response = await fetch('https://library-system-rydv.onrender.com/movies');
             const json = await response.json();
             if(response.ok){
                 setMovies(json);                    
             }
         };
         const fetchMusic = async() => {
-            const response = await fetch('http://localhost:4000/music');
+            //const response = await fetch('http://localhost:4000/music');
+            const response = await fetch('https://library-system-rydv.onrender.com/music');
             const json = await response.json();
             if(response.ok){
                 setMusic(json);                    

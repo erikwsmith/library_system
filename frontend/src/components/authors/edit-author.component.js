@@ -46,7 +46,8 @@ const EditAuthor = () => {
     };
     const updateAuthor = async() =>{        
         const author = {last_name, first_name, middle_name, full_name, biography};
-        const response = await fetch('http://localhost:4000/authors/' + id, {
+        //const response = await fetch('http://localhost:4000/authors/' + id, {
+        const response = await fetch('https://library-system-rydv.onrender.com/authors/' + id, {
             method: 'PATCH',
             body: JSON.stringify(author),
             headers: {
@@ -64,7 +65,8 @@ const EditAuthor = () => {
     useEffect( ()=>{
         const fetchData = async()=>{          
             //get author
-            const authorQuery = await fetch('http://localhost:4000/authors/' + id);
+            //const authorQuery = await fetch('http://localhost:4000/authors/' + id);
+            const authorQuery = await fetch('https://library-system-rydv.onrender.com/authors/' + id);
             let authorJson = await authorQuery.json();
             if(authorQuery.ok) {                 
                 setAuthor(authorJson);

@@ -18,13 +18,15 @@ const BooksList = () => {
     useEffect( ()=>{
         const fetchData = async()=>{
             //get all authors
-            const authorQuery = await fetch('http://localhost:4000/authors');
+            //const authorQuery = await fetch('http://localhost:4000/authors');
+            const authorQuery = await fetch('https://library-system-rydv.onrender.com/authors');
             const authorJson = await authorQuery.json();
             if(authorQuery.ok) {    
                 setAuthors(authorJson);    
             };            
             //get all books
-            const bookQuery = await fetch('http://localhost:4000/books');
+            //const bookQuery = await fetch('http://localhost:4000/books');
+            const bookQuery = await fetch('https://library-system-rydv.onrender.com/books');
             let bookJson = await bookQuery.json();
             if(bookQuery.ok) { 
                 const filterResults = bookJson.filter((item)=> {
@@ -63,7 +65,8 @@ const BooksList = () => {
     const handleClose = () => {setShow(false);}
     const handleShow = () => setShow(true);
     const deleteBook = async() => {
-        const idString = 'http://localhost:4000'+ deletedID;
+        //const idString = 'http://localhost:4000'+ deletedID;
+        const idString = 'https://library-system-rydv.onrender.com'+ deletedID;
         await fetch(idString, {
             method: 'DELETE'            
         }).then(setDeleted(deletedID)).then(handleClose);

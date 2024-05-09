@@ -37,7 +37,8 @@ const EditBook = () => {
     useEffect( ()=>{
         const fetchData = async()=>{          
             //get all movies
-            const movieQuery = await fetch('http://localhost:4000/movies/' + id);
+            //const movieQuery = await fetch('http://localhost:4000/movies/' + id);
+            const movieQuery = await fetch('https://library-system-rydv.onrender.com/movies/' + id);
             let movieJson = await movieQuery.json();
             if(movieQuery.ok) {                 
                 setMovie(movieJson);
@@ -60,7 +61,8 @@ const EditBook = () => {
 
     const updateMovie = async() =>{
         const movie = {title, image, rating, runtime, format, releaseDate, callNumber, summary};
-        const response = await fetch('http://localhost:4000/movies/' + id, {
+        //const response = await fetch('http://localhost:4000/movies/' + id, {
+        const response = await fetch('https://library-system-rydv.onrender.com/movies/' + id, {
             method: 'PATCH',
             body: JSON.stringify(movie),
             headers: {

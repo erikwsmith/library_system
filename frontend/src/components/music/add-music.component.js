@@ -41,7 +41,8 @@ const AddMusic = () =>{
 
     useEffect(()=>{
         const fetchArtists = async() => {
-            const response = await fetch('http://localhost:4000/artists');
+            //const response = await fetch('http://localhost:4000/artists');
+            const response = await fetch('https://library-system-rydv.onrender.com/artists');
             const json = await response.json();
             if(response.ok){
                 setArtistsList(json);
@@ -52,7 +53,8 @@ const AddMusic = () =>{
     const handleSubmit = async(e) => {
         e.preventDefault();
         const music = {title, image, format, runtime, genre, releaseDate, artists, tracks, callNumber, type: 'Music'};
-        const response = await fetch('http://localhost:4000/music/add', {
+        //const response = await fetch('http://localhost:4000/music/add', {
+        const response = await fetch('https://library-system-rydv.onrender.com/music/add', {
             method: 'POST',
             body: JSON.stringify(music),
             headers: {
@@ -99,7 +101,8 @@ const AddMusic = () =>{
         checkValidity(lastNameRef);       
         const artist = {group_name, last_name, full_name, first_name, middle_name, biography};
         if(group_name !='' || last_name !=''){
-            const response = await fetch('http://localhost:4000/artists/add', {
+            //const response = await fetch('http://localhost:4000/artists/add', {
+            const response = await fetch('https://library-system-rydv.onrender.com/artists/add', {
                 method: 'POST',
                 body: JSON.stringify(artist),
                 headers: {

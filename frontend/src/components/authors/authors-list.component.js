@@ -20,7 +20,8 @@ const AuthorsList = () => {
     const handleClose = () => {setShow(false);}
     const handleShow = () => setShow(true);
     const deleteAuthor = async() => {
-        const idString = 'http://localhost:4000'+ deletedID;
+        //const idString = 'http://localhost:4000'+ deletedID;
+        const idString = 'https://library-system-rydv.onrender.com'+ deletedID;
         await fetch(idString, {
             method: 'DELETE'            
         }).then(setDeleted(deletedID)).then(handleClose);
@@ -40,7 +41,8 @@ const AuthorsList = () => {
     useEffect( ()=>{
         const fetchData = async()=>{
             //get all authors
-            const authorQuery = await fetch('http://localhost:4000/authors');
+            //const authorQuery = await fetch('http://localhost:4000/authors');
+            const authorQuery = await fetch('https://library-system-rydv.onrender.com/authors');
             const authorJson = await authorQuery.json();  
             if(authorQuery.ok) { 
                 const filterResults = authorJson.filter((item)=> {                           
