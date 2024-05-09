@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -6,7 +6,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
 const Nav_Bar = () =>{      
-        return (
+        /*return (
             <nav className="navbar fixed-top navbar-dark bg-dark navbar-expand-md p-2">
                 <div className="nav-items">
                     <Link to="/" className="navbar-brand "><i className="fa fa-book site-icon"></i></Link>
@@ -46,7 +46,65 @@ const Nav_Bar = () =>{
                     </div>
                 </div>
             </nav>
-        );
+        );*/
+ // adding the states 
+    const [isActive, setIsActive] = useState(false);    
+    const toggleActiveClass = () => {        
+        //event.target.classList.toggle('navActive');
+        //if(event.target.classList.contains('navActive')){event.target.classList.remove('navActive')};
+        //if(!event.target.classList.contains('navActive')){event.target.classList.add('navActive')};
+        setIsActive(!isActive);
+    };
+    const removeActive = () => {
+        setIsActive(false);
+    };
+
+    return (
+        <div className="App">
+            <header className="App-header">
+                <nav className="navbar">                    
+                    <a href='/' className="navLogo"><i className="fa fa-book site-icon"></i></a>
+                    <ul className={'navMenu ' +  (isActive?'navActive': '')} onClick={toggleActiveClass}>
+                        <li onClick={removeActive}>
+                            <a href='/books' className="navLink">Books</a>
+                        </li>
+                        <li onClick={removeActive}>
+                            <a href='/authors' className="navLink">Authors</a>
+                        </li>
+                        <li onClick={removeActive}>
+                            <a href='/movies' className="navLink">Movies</a>
+                        </li>
+                        <li onClick={removeActive}>
+                            <a href='/music' className="navLink">Music</a>
+                        </li>
+                        <li onClick={removeActive}>
+                            <a href='/artists' className="navLink">Artists</a>
+                        </li>
+                        <li onClick={removeActive}>
+                            <a href='/checkout' className="navLink">Checkout</a>
+                        </li>
+                        <li onClick={removeActive}>
+                            <a href='/return' className="navLink">Return</a>
+                        </li>
+                        <li onClick={removeActive}>
+                            <a href='/circulation' className="navLink">Circulation</a>
+                        </li>
+                        <li onClick={removeActive}>
+                            <a href='/billing' className="navLink">Billing</a>
+                        </li>
+                        <li onClick={removeActive}>
+                            <a href='/users' className="navLink">Users</a>
+                        </li>
+                    </ul>
+                    <div className={'hamburger ' + (isActive? 'navActive': '')} onClick={toggleActiveClass}>
+                        <span className="bar"></span>
+                        <span className="bar"></span>
+                        <span className="bar"></span>
+                    </div>
+                </nav>
+            </header>
+        </div>
+    )
     };
 
 export default Nav_Bar;
